@@ -2,7 +2,7 @@
 
 ## 说明
 淘宝文胸商品评论内容爬取与简单分析，支持单机爬取和集群爬取。<br>
-效果展示：[http://vps.kalen25115.cn/bra/](http://vps.kalen25115.cn/bra/){:target="_blank"}
+效果展示：[http://vps.kalen25115.cn/bra/](http://vps.kalen25115.cn/bra/)
 
 ## 状态
 测试中。。。
