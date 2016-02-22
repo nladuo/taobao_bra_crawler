@@ -1,0 +1,32 @@
+body {
+	margin: 0 auto;
+    padding: 22px 0;
+    font: 14px Helvetica, Arial, sans-serif;
+    background: #E6E6FA;
+}
+#basic {
+	width: 700px;height:570px;
+    margin: 0 auto;
+
+}
+#color {
+	width: 700px;height:570px;
+    margin: 0 auto; display: none;
+}
+#details {
+	width: 700px;height:570px;
+    margin: 0 auto; display: none;
+}
+.linear{ 
+
+    width:100%; 
+    height:700px; 
+    FILTER: progid:DXImageTransform.Microsoft.Gradient(gradientType=0,startColorStr=#FFFFFF,endColorStr=#C1FFC1); /*IE 6 7 8*/     
+    background: -ms-linear-gradient(top,#FFFFFF,  #C1FFC1);        /* IE 10 */
+    background:-moz-linear-gradient(top,#FFFFFF,#C1FFC1);/*火狐*/ 
+    background:-webkit-gradient(linear, 0% 0%, 0% 100%,from(#FFFFFF), to(#C1FFC1));/*谷歌*/ 
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFFFFF), to(#C1FFC1));      /* Safari 4-5, Chrome 1-9*/
+    background: -webkit-linear-gradient(top, #FFFFFF, #C1FFC1);   /*Safari5.1 Chrome 10+*/
+    background: -o-linear-gradient(top, #FFFFFF, #C1FFC1);  /*Opera 11.10+*/
+
+} 

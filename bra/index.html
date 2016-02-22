@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/bra/css/bootstrap.min.css" type="text/css"  />
+
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <title>Exposition</title>
+  <script type="text/javascript" src="js/jquery-1.11.3.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  <script src="js/echarts.js"></script>
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+<body class="linear">
+  <div id="main">
+    <div id="basic" ></div>
+    <div id="color" ></div>
+    <div id="details" ></div>
+  </div>
+  <nav>
+    <ul class="pager">
+      <li class="previous">
+        <a href="#">
+          <span class="glyphicon glyphicon-arrow-left
+" aria-hidden="true" style="font-size: 22px"></span>
+        </a>
+      </li>
+      <li class="next">
+        <a href="#">
+          <span class="glyphicon glyphicon-arrow-right"
+     aria-hidden="true" style="font-size: 22px"></span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <script type="text/javascript">
+ //加载饼状图和柱状图
+ var bra_data="bra.json"; 
+ var data_basic=[],type_basic=[],data_color=[],type_color=[],data_size=[],type_size=[];
+$.getJSON(bra_data, function(data){
+ //颜色
+$.each(data.color,function(key,word){
+  if(key!="whole" ){
+  data_color.push({"value":word,"name":key});
+  type_color.push(key);
+  }
+});
+  //尺寸
+$.each(data.basic,function(key,word){
+ if(key!="whole"){
+  data_basic.push({"value":word,"name":key+"杯"});
+  type_basic.push(key+"杯");
+ }
+});
+//百分比
+$.each(data.detail,function(key,word){
+  var whole=data.detail.whole;
+  if(key!="whole"&&word>=1000 ){
+  data_size.push((100*word/whole).toFixed(3));
+  type_size.push(key);
+  }
+});
+
+ 
+        // 基于准备好的dom，初始化echarts实例
+        var myChart_color = echarts.init(document.getElementById('color'));
+        var myChart_basic = echarts.init(document.getElementById('basic'));
+        var myChart_details = echarts.init(document.getElementById('details'));
+
+        // 指定图表的配置项和数据
+option_color = {
+
+    title : {
+        text: '淘宝网用户购买文胸颜色饼状图',
+        subtext: '仅具参考意义',
+        x:'center'
+    },
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    legend: {
+        orient: 'vertical',
+        left: 'left',
+        data: type_color
+    },
+    series : [
+        {
+            name: '该颜色购买人数',
+            type: 'pie',
+            radius : '55%',
+            center: ['50%', '60%'],
+            data:data_color,
+            color:['#EEB422','#BEBEBE','#FFA07A','#8B658B','#EE3B3B','#6B8E23','#5F9EA0','#FFC125','#696969'],
+            itemStyle: {
+                emphasis: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }
+    ]
+};
+ option_basic = {
+    title : {
+        text: '淘宝网用户购买文胸尺寸饼状图',
+        subtext: '仅具参考意义',
+        x:'center'
+    },
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    legend: {
+        orient: 'vertical',
+        left: 'left',
+        data: type_basic
+    },
+    series : [
+        {
+            name: '该尺寸购买人数',
+            type: 'pie',
+            radius : '55%',
+            center: ['50%', '60%'],
+            data:data_basic,
+            color:['#EEB422','#708090','#FFA07A','#8B658B','#EE3B3B','#6B8E23','#5F9EA0','#FFC125','#696969'],
+            itemStyle: {
+                emphasis: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }
+    ]
+};
+
+option_details = {
+    title : {
+        text: '各胸围尺寸所占人数柱状图',
+        subtext: '仅具参考意义',
+        x:'center'
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType: {show: true, type: ['line', 'bar']},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    legend: {
+        orient: 'vertical',
+        left: 'left',
+        data:['各胸围尺寸所占的人数百分比']
+    },
+    xAxis : [
+        {
+            type : 'category',
+            data : type_size
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value',
+            name : '人数',
+            min: 0,
+            max: 20,
+            interval:5,
+            axisLabel : {
+                formatter: '{value} %'
+            }
+        }
+       
+    ],
+    series : [
+
+        {
+            name:'各胸围尺寸所占的人数百分比',
+            type:'bar',
+            data:data_size,
+            color:'#191970'
+        },
+        
+    ]
+};
+        // 使用刚指定的配置项和数据显示图。
+        myChart_color.setOption(option_color);
+        myChart_basic.setOption(option_basic);
+        myChart_details.setOption(option_details);
+});
+//左右翻页显示
+  basic_div=$("#basic");
+  color_div=$("#color");
+  details_div=$("#details");
+  main_div=$("main")
+
+$(".previous").click(function(){
+  if (basic_div.is(":visible")){
+    var myChart_details = echarts.init(document.getElementById('details'));
+    myChart_details.setOption(option_details);
+    basic_div.hide();
+    color_div.hide();
+    details_div.fadeIn("slow");
+  }
+  else if (color_div.is(":visible")){
+    var myChart_basic = echarts.init(document.getElementById('basic'));
+    myChart_basic.setOption(option_basic);
+    color_div.hide();
+    basic_div.fadeIn("slow");
+    details_div.hide();
+  }
+  else if (details_div.is(":visible")){
+    var myChart_color = echarts.init(document.getElementById('color'));
+    myChart_color.setOption(option_color);
+    details_div.hide();
+    color_div.fadeIn("slow");
+    basic_div.hide();
+  }
+});
+$(".next").click(function(){
+if (basic_div.is(":visible")){
+   var myChart_color = echarts.init(document.getElementById('color'));
+    myChart_color.setOption(option_color);
+    basic_div.hide();
+    color_div.fadeIn("slow");
+    details_div.hide();
+  }
+  else if (color_div.is(":visible")){
+    var myChart_details = echarts.init(document.getElementById('details'));
+    myChart_details.setOption(option_details);
+    color_div.hide();
+    basic_div.hide();
+    details_div.fadeIn("slow");
+  }
+  else if (details_div.is(":visible")){
+    var myChart_basic = echarts.init(document.getElementById('basic'));
+    myChart_basic.setOption(option_basic);
+    details_div.hide();
+    color_div.hide();
+    basic_div.fadeIn("slow");
+  }
+});
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
