@@ -1,4 +1,4 @@
-//单机爬取
+//文胸信息爬虫
 package main
 
 import (

@@ -98,6 +98,12 @@ func addBaseTasks() {
 
 }
 
+type BraRateUserData struct {
+	ItemId   string
+	SellerId string
+	PageNum  int
+}
+
 func ParseItem(res *model.Result, processor model.Processor) {
 	fmt.Println(string(res.Response.Body))
 	bras := parse_bras(res.Response.Body)
