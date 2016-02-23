@@ -35,8 +35,8 @@ type BraRate struct {
 const (
 	thread_num int = 2000
 	//GET_PROXY_URL     = "http://www.ip3366.net/api/?key=20160223214006286&getnum=10&anonymoustype=4&proxytype=0"
-	GET_PROXY_URL = "http://www.89ip.cn/api/?tqsl=10&cf=1"
-	//GET_PROXY_URL             = "http://www.66ip.cn/getzh.php?getzh=mmpvmxywnwomuvw&getnum=10&isp=0&anonymoustype=4&start=&ports=&export=&ipaddress=&area=0&proxytype=0&api=https"
+	//GET_PROXY_URL = "http://www.89ip.cn/api/?tqsl=10&cf=1"
+	GET_PROXY_URL             = "http://www.66ip.cn/getzh.php?getzh=mmpvmxywnwomuvw&getnum=10&isp=0&anonymoustype=4&start=&ports=&export=&ipaddress=&area=1&proxytype=0&api=https"
 	PARSE_ITEM         string = "解析商品信息"
 	PARSE_BRA_RATE     string = "解析商品评论信息"
 	PARSE_BRA_RATE_NUM string = "解析商品评论数量"
@@ -82,7 +82,7 @@ func main() {
 }
 
 func addBaseTasks() {
-	for i := 1; i <= 3; i++ {
+	for i := 1; i <= 100; i++ {
 
 		baseTask := model.Task{
 			Identifier: PARSE_ITEM,
@@ -102,7 +102,7 @@ func ParseItem(res *model.Result, processor model.Processor) {
 			mProxyGenerator.ChangeProxy(&res.UsedProxy)
 			//重新把task加入队列
 			task := *res.GetInitialTask()
-			fmt.Println("被反爬虫了， 重新加入task：", task.Url)
+			fmt.Println("被反爬虫了或者出现错误， 重新加入task：", task.Url)
 			processor.AddTask(task)
 		}
 		return
@@ -137,7 +137,7 @@ func ParseBraRate(res *model.Result, processor model.Processor) {
 			mProxyGenerator.ChangeProxy(&res.UsedProxy)
 			//重新把task加入队列
 			task := *res.GetInitialTask()
-			fmt.Println("被反爬虫了， 重新加入task：", task.Url)
+			fmt.Println("被反爬虫了被反爬虫了或者出现错误， 重新加入task：", task.Url)
 			processor.AddTask(task)
 		}
 		return
@@ -157,7 +157,7 @@ func ParseBraRateNum(res *model.Result, processor model.Processor) {
 	if rate_num == 0 {
 		if checkItemRateAntiSpider(res.Response.Body) {
 			task := *res.GetInitialTask()
-			fmt.Println("被反爬虫了， 重新加入task：", task.Url)
+			fmt.Println("被反爬虫了被反爬虫了或者出现错误， 重新加入task：", task.Url)
 			processor.AddTask(task)
 		}
 		return
@@ -317,7 +317,7 @@ RETRY:
 	for k, v := range ip_and_port_strs {
 		strs := strings.Split(v, ":")
 		this.proxy_list[k] = model.Proxy{IP: strs[0], Port: strs[1], Type: model.TYPE_HTTP}
-		//fmt.Println("Get proxy from proxy server, ip:", strs[0], "port:", strs[1])
+		fmt.Println("Get proxy from proxy server, ip:", strs[0], "port:", strs[1])
 	}
 	this.index = 0
 }
