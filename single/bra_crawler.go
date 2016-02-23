@@ -33,16 +33,19 @@ type BraRate struct {
 }
 
 const (
-	thread_num         int    = 2000
-	GET_PROXY_URL             = "http://www.66ip.cn/getzh.php?getzh=mmpvmxywnwomuvw&getnum=10&isp=0&anonymoustype=4&start=&ports=&export=&ipaddress=&area=0&proxytype=0&api=https"
+	thread_num int = 2000
+	//GET_PROXY_URL     = "http://www.ip3366.net/api/?key=20160223214006286&getnum=10&anonymoustype=4&proxytype=0"
+	GET_PROXY_URL = "http://www.89ip.cn/api/?tqsl=10&cf=1"
+	//GET_PROXY_URL             = "http://www.66ip.cn/getzh.php?getzh=mmpvmxywnwomuvw&getnum=10&isp=0&anonymoustype=4&start=&ports=&export=&ipaddress=&area=0&proxytype=0&api=https"
 	PARSE_ITEM         string = "解析商品信息"
 	PARSE_BRA_RATE     string = "解析商品评论信息"
 	PARSE_BRA_RATE_NUM string = "解析商品评论数量"
 )
 
 var (
-	mDb      *gorm.DB
-	mCrawler *crawler.Crawler
+	mDb             *gorm.DB
+	mCrawler        *crawler.Crawler
+	mProxyGenerator *MyProxyGenerator
 )
 
 func main() {
@@ -71,14 +74,15 @@ func main() {
 	mCrawler.AddParser(itemParser)
 	mCrawler.AddParser(braRateParser)
 	mCrawler.AddParser(braRateNumParser)
-	//设置代理ip产生器
-	mCrawler.SetProxyGenerator(NewMyProxyGenerator())
+	//设置代理生成器
+	mProxyGenerator = NewMyProxyGenerator()
+	mCrawler.SetProxyGenerator(mProxyGenerator)
 	//开始运行
 	mCrawler.Run()
 }
 
 func addBaseTasks() {
-	for i := 1; i <= 100; i++ {
+	for i := 1; i <= 3; i++ {
 
 		baseTask := model.Task{
 			Identifier: PARSE_ITEM,
@@ -94,6 +98,9 @@ func ParseItem(res *model.Result, processor model.Processor) {
 	bras := parse_bras(res.Response.Body)
 	if len(bras) == 0 {
 		if checkItemAntiSpider(res.Response.Body) {
+			//换代理
+			mProxyGenerator.ChangeProxy(&res.UsedProxy)
+			//重新把task加入队列
 			task := *res.GetInitialTask()
 			fmt.Println("被反爬虫了， 重新加入task：", task.Url)
 			processor.AddTask(task)
@@ -102,8 +109,11 @@ func ParseItem(res *model.Result, processor model.Processor) {
 	}
 	for i := 0; i < len(bras); i++ {
 		bra := &bras[i]
-		mDb.Create(bra) // add bra to db
-		task_url := "http://rate.tmall.com/list_detail_rate.htm?itemId=" + bra.ItemId + "&sellerId=" + bra.SellerId + "&currentPage=10000&pageSize=1000000"
+		rows_affected := mDb.Create(bra).RowsAffected // add bra to db
+		if rows_affected == 0 {                       //已经添加过了
+			continue
+		}
+		task_url := "https://rate.tmall.com/list_detail_rate.htm?itemId=" + bra.ItemId + "&sellerId=" + bra.SellerId + "&currentPage=10000&pageSize=1000000"
 		braByte, err := json.Marshal(bra)
 		if err != nil {
 			continue
@@ -123,6 +133,9 @@ func ParseBraRate(res *model.Result, processor model.Processor) {
 
 	if len(bra_rates) == 0 {
 		if checkItemRateAntiSpider(res.Response.Body) {
+			//换代理
+			mProxyGenerator.ChangeProxy(&res.UsedProxy)
+			//重新把task加入队列
 			task := *res.GetInitialTask()
 			fmt.Println("被反爬虫了， 重新加入task：", task.Url)
 			processor.AddTask(task)
@@ -133,6 +146,36 @@ func ParseBraRate(res *model.Result, processor model.Processor) {
 	for i := 0; i < len(bra_rates); i++ {
 		bra_rate := &bra_rates[i]
 		mDb.Create(bra_rate)
+	}
+}
+
+//解析文胸商品的页数
+func ParseBraRateNum(res *model.Result, processor model.Processor) {
+	fmt.Println(string(res.Response.Body))
+
+	rate_num := parse_bra_rate_num(res.Response.Body)
+	if rate_num == 0 {
+		if checkItemRateAntiSpider(res.Response.Body) {
+			task := *res.GetInitialTask()
+			fmt.Println("被反爬虫了， 重新加入task：", task.Url)
+			processor.AddTask(task)
+		}
+		return
+	}
+
+	var bra Bra
+	err := json.Unmarshal(res.UserData, &bra)
+	if err != nil {
+		return
+	}
+	for i := 0; i <= rate_num; i++ {
+		url := "https://rate.tmall.com/list_detail_rate.htm?itemId=" + bra.ItemId +
+			"&sellerId=" + bra.SellerId + "&currentPage=" +
+			strconv.FormatInt(int64(i), 10) + "&pageSize=1000000"
+		task := model.Task{
+			Identifier: PARSE_BRA_RATE,
+			Url:        url}
+		processor.AddTask(task)
 	}
 }
 
@@ -157,36 +200,6 @@ func checkItemRateAntiSpider(data []byte) bool {
 		return true
 	}
 	return false
-}
-
-//解析文胸商品的页数
-func ParseBraRateNum(res *model.Result, processor model.Processor) {
-	fmt.Println(string(res.Response.Body))
-
-	rate_num := parse_bra_rate_num(res.Response.Body)
-	if rate_num == 0 {
-		if checkItemRateAntiSpider(res.Response.Body) {
-			task := *res.GetInitialTask()
-			fmt.Println("被反爬虫了， 重新加入task：", task.Url)
-			processor.AddTask(task)
-		}
-		return
-	}
-
-	var bra Bra
-	err := json.Unmarshal(res.UserData, &bra)
-	if err != nil {
-		return
-	}
-	for i := 0; i <= rate_num; i++ {
-		url := "http://rate.tmall.com/list_detail_rate.htm?itemId=" + bra.ItemId +
-			"&sellerId=" + bra.SellerId + "&currentPage=" +
-			strconv.FormatInt(int64(i), 10) + "&pageSize=1000000"
-		task := model.Task{
-			Identifier: PARSE_BRA_RATE,
-			Url:        url}
-		processor.AddTask(task)
-	}
 }
 
 func parse_bras(body []byte) (bras []Bra) {
@@ -264,47 +277,60 @@ func parse_bra_rate(body []byte) (bra_rates []BraRate) {
 type MyProxyGenerator struct {
 	proxy_list [10]model.Proxy
 	index      int
-	used_times int
 	lock       *sync.Mutex
 }
 
 func NewMyProxyGenerator() *MyProxyGenerator {
 	var generator MyProxyGenerator
-	generator.used_times = 0
 	generator.lock = &sync.Mutex{}
 	generator.index = 10
 	return &generator
+}
+
+func (this *MyProxyGenerator) ChangeProxy(proxy *model.Proxy) {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+
+	if this.index >= 10 {
+		this.updateProxyList()
+	}
+
+	if this.proxy_list[this.index].IP == proxy.IP &&
+		this.proxy_list[this.index].Port == proxy.Port {
+		//change proxy
+		this.index++
+	}
+}
+
+func (this *MyProxyGenerator) updateProxyList() {
+RETRY:
+	resp, err := http.Get(GET_PROXY_URL)
+	if err != nil {
+		goto RETRY
+	}
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		goto RETRY
+	}
+	reg_ip_and_port := regexp.MustCompile(`[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\:[0-9]*`)
+	ip_and_port_strs := reg_ip_and_port.FindAllString(string(data), -1)
+	for k, v := range ip_and_port_strs {
+		strs := strings.Split(v, ":")
+		this.proxy_list[k] = model.Proxy{IP: strs[0], Port: strs[1], Type: model.TYPE_HTTP}
+		//fmt.Println("Get proxy from proxy server, ip:", strs[0], "port:", strs[1])
+	}
+	this.index = 0
 }
 
 func (this *MyProxyGenerator) GetProxy() model.Proxy {
 	this.lock.Lock()
 	defer this.lock.Unlock()
 
-	if this.used_times == 0 {
-		this.index++
-		if this.index >= 10 {
-		RETRY:
-			resp, err := http.Get(GET_PROXY_URL)
-			if err != nil {
-				goto RETRY
-			}
-			data, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				goto RETRY
-			}
-			reg_ip_and_port := regexp.MustCompile(`[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\:[0-9]*`)
-			ip_and_port_strs := reg_ip_and_port.FindAllString(string(data), -1)
-			for k, v := range ip_and_port_strs {
-				strs := strings.Split(v, ":")
-				this.proxy_list[k] = model.Proxy{IP: strs[0], Port: strs[1], Type: model.TYPE_HTTP}
-				fmt.Println("ip:", strs[0], "port:", strs[1])
-			}
-			this.index = 0
-		}
-		this.used_times = 10 //一个代理ip用10次
+	if this.index >= 10 {
+		this.updateProxyList()
 	}
+
 	proxy := this.proxy_list[this.index]
 	//fmt.Println("Get IP:", proxy.IP, "  Port:", proxy.Port)
-	this.used_times--
 	return proxy
 }
