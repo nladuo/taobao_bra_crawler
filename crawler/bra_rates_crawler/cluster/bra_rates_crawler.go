@@ -12,6 +12,7 @@ import (
 	"github.com/qiniu/iconv"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
