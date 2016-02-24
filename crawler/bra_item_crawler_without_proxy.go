@@ -1,4 +1,4 @@
-//文胸商品条目爬虫
+//文胸商品条目爬虫,不使用代理爬取
 package main
 
 import (
@@ -26,9 +26,7 @@ type Bra struct {
 }
 
 const (
-	thread_num    int = 100
-	GET_PROXY_URL     = "http://www.89ip.cn/api/?tqsl=10&cf=1" //一个免费的代理服务器
-	//GET_PROXY_URL        = "http://www.66ip.cn/getzh.php?getzh=mmpvmxywnwomuvw&getnum=10&isp=0&anonymoustype=4&start=&ports=&export=&ipaddress=&area=1&proxytype=0&api=https"
+	thread_num int    = 100
 	PARSE_ITEM string = "解析商品信息"
 )
 
@@ -152,68 +150,4 @@ func parse_bras(body []byte) (bras []Bra) {
 		bras = append(bras, bra)
 	}
 	return
-}
-
-//代理ip生成器
-type MyProxyGenerator struct {
-	proxy_list [10]model.Proxy
-	index      int
-	lock       *sync.Mutex
-}
-
-func NewMyProxyGenerator() *MyProxyGenerator {
-	var generator MyProxyGenerator
-	generator.lock = &sync.Mutex{}
-	generator.index = 10
-	return &generator
-}
-
-func (this *MyProxyGenerator) ChangeProxy(proxy *model.Proxy) {
-	this.lock.Lock()
-	defer this.lock.Unlock()
-
-	if this.index >= 10 {
-		this.updateProxyList()
-	}
-
-	if this.proxy_list[this.index].IP == proxy.IP &&
-		this.proxy_list[this.index].Port == proxy.Port {
-		//change proxy
-		this.index++
-	}
-}
-
-//网络请求，获取代理ip
-// 利用正则表达式匹配 ip:port 格式
-func (this *MyProxyGenerator) updateProxyList() {
-RETRY:
-	resp, err := http.Get(GET_PROXY_URL)
-	if err != nil {
-		goto RETRY
-	}
-	data, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		goto RETRY
-	}
-	reg_ip_and_port := regexp.MustCompile(`[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\:[0-9]*`)
-	ip_and_port_strs := reg_ip_and_port.FindAllString(string(data), -1)
-	for k, v := range ip_and_port_strs {
-		strs := strings.Split(v, ":")
-		this.proxy_list[k] = model.Proxy{IP: strs[0], Port: strs[1]}
-		fmt.Println("Get proxy from network, ip:", strs[0], "port:", strs[1])
-	}
-	this.index = 0
-}
-
-func (this *MyProxyGenerator) GetProxy() model.Proxy {
-	this.lock.Lock()
-	defer this.lock.Unlock()
-
-	if this.index >= 10 {
-		this.updateProxyList()
-	}
-
-	proxy := this.proxy_list[this.index]
-	fmt.Println("Get IP:", proxy.IP, "  Port:", proxy.Port)
-	return proxy
 }

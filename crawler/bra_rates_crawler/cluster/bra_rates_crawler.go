@@ -1,4 +1,4 @@
-//文胸信息爬虫
+//文胸评论爬虫，集群版
 package main
 
 import (
@@ -47,6 +47,14 @@ var (
 	mProxyGenerator *MyProxyGenerator
 )
 
+const (
+	DB_USER   = "root"
+	DB_PASSWD = "root"
+	DB_HOST   = "localhost"
+	DB_PORT   = "3306"
+	DBNAME    = "taobao"
+)
+
 func main() {
 	if len(os.Args) != 2 {
 		fmt.Fprintln(os.Stderr, "lack parameter")
@@ -58,7 +66,7 @@ func main() {
 		panic(err)
 	}
 	//打开数据库
-	db, err := gorm.Open("mysql", "root:root@/taobao?charset=utf8&parseTime=True&loc=Local")
+	db, err := gorm.Open("mysql", DB_USER+":"+DB_PASSWD+"@tcp("+DB_HOST+":"+DB_PORT+")/"+DBNAME+"?charset=utf8&parseTime=True")
 	if err != nil {
 		panic(err)
 	}

@@ -1,4 +1,4 @@
-//文胸信息爬虫
+//文胸信息爬虫，单机版
 package main
 
 import (
@@ -33,9 +33,8 @@ type BraRate struct {
 }
 
 const (
-	thread_num int = 2000
-	//GET_PROXY_URL     = "http://www.ip3366.net/api/?key=20160223214006286&getnum=10&anonymoustype=4&proxytype=0"
-	GET_PROXY_URL = "http://www.89ip.cn/api/?tqsl=10&cf=1"
+	thread_num    int = 200
+	GET_PROXY_URL     = "http://www.89ip.cn/api/?tqsl=10&cf=1"
 	//GET_PROXY_URL             = "http://www.66ip.cn/getzh.php?getzh=mmpvmxywnwomuvw&getnum=10&isp=0&anonymoustype=4&start=&ports=&export=&ipaddress=&area=1&proxytype=0&api=https"
 	PARSE_BRA_RATE     string = "解析商品评论信息"
 	PARSE_BRA_RATE_NUM string = "解析商品评论数量"
@@ -47,8 +46,17 @@ var (
 	mProxyGenerator *MyProxyGenerator
 )
 
+//mysql配置
+const (
+	DB_USER   = "root"
+	DB_PASSWD = "root"
+	DB_HOST   = "localhost"
+	DB_PORT   = "3306"
+	DBNAME    = "taobao"
+)
+
 func main() {
-	db, err := gorm.Open("mysql", "root:root@/taobao?charset=utf8&parseTime=True&loc=Local")
+	db, err := gorm.Open("mysql", DB_USER+":"+DB_PASSWD+"@tcp("+DB_HOST+":"+DB_PORT+")/"+DBNAME+"?charset=utf8&parseTime=True")
 	if err != nil {
 		panic(err)
 	}

@@ -1,7 +1,7 @@
 {
     "AppName": "taobao-bra-crawler",
     "IsMaster": true,
-    "ThreadNum": 2000,
+    "ThreadNum": 200,
     "LockerTimeout": 10,
     "ZkTimeOut": 600,
     "ZkHosts": [
