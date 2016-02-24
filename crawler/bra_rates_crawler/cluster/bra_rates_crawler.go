@@ -33,11 +33,9 @@ type BraRate struct {
 }
 
 const (
-	thread_num int = 2000
 	//GET_PROXY_URL     = "http://www.ip3366.net/api/?key=20160223214006286&getnum=10&anonymoustype=4&proxytype=0"
-	//GET_PROXY_URL = "http://www.89ip.cn/api/?tqsl=10&cf=1"
-	GET_PROXY_URL             = "http://www.66ip.cn/getzh.php?getzh=mmpvmxywnwomuvw&getnum=10&isp=0&anonymoustype=4&start=&ports=&export=&ipaddress=&area=1&proxytype=0&api=https"
-	PARSE_ITEM         string = "解析商品信息"
+	GET_PROXY_URL = "http://www.89ip.cn/api/?tqsl=10&cf=1"
+	//GET_PROXY_URL             = "http://www.66ip.cn/getzh.php?getzh=mmpvmxywnwomuvw&getnum=10&isp=0&anonymoustype=4&start=&ports=&export=&ipaddress=&area=1&proxytype=0&api=https"
 	PARSE_BRA_RATE     string = "解析商品评论信息"
 	PARSE_BRA_RATE_NUM string = "解析商品评论数量"
 )
@@ -49,29 +47,33 @@ var (
 )
 
 func main() {
+	if len(os.Args) != 2 {
+		fmt.Fprintln(os.Stderr, "lack parameter")
+		os.Exit(-1)
+	}
+	//读取配置文件
+	config, err := model.GetDistributedConfigFromPath(os.Args[1])
+	if err != nil {
+		panic(err)
+	}
+	//打开数据库
 	db, err := gorm.Open("mysql", "root:root@/taobao?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
 		panic(err)
 	}
 	mDb = &db
-	//创建表用来储存文胸商品的基本信息
-	if !db.HasTable(&Bra{}) {
-		db.CreateTable(&Bra{})
-	}
 	//创建表用来储存文胸商品评论内容
 	if !db.HasTable(&BraRate{}) {
 		db.CreateTable(&BraRate{})
 	}
 	defer db.Close()
-	//创建一个本地爬虫，用sql数据库存储任务队列，这里使用mysql
-	mCrawler = crawler.NewLocalSqlCrawler(&db, thread_num)
+	//创建一个分布式爬虫，用sql数据库存储任务队列，这里使用mysql
+	mCrawler = crawler.NewDistributedSqlCrawler(&db, config)
 	addBaseTasks()
 	//设置解析器
-	itemParser := model.Parser{Identifier: PARSE_ITEM, Parse: ParseItem}
 	braRateParser := model.Parser{Identifier: PARSE_BRA_RATE, Parse: ParseBraRate}
 	braRateNumParser := model.Parser{Identifier: PARSE_BRA_RATE_NUM, Parse: ParseBraRateNum}
 	//添加解析器
-	mCrawler.AddParser(itemParser)
 	mCrawler.AddParser(braRateParser)
 	mCrawler.AddParser(braRateNumParser)
 	//设置代理生成器
@@ -82,38 +84,11 @@ func main() {
 }
 
 func addBaseTasks() {
-	for i := 1; i <= 100; i++ {
-
-		baseTask := model.Task{
-			Identifier: PARSE_ITEM,
-			Url:        "http://s.m.taobao.com/search?q=文胸&m=api4h5&page=" + strconv.FormatInt(int64(i), 10)}
-		mCrawler.AddBaseTask(baseTask)
-	}
-
-}
-
-//解析文胸商品条目
-func ParseItem(res *model.Result, processor model.Processor) {
-	fmt.Println(string(res.Response.Body))
-	bras := parse_bras(res.Response.Body)
-	if len(bras) == 0 {
-		if checkItemAntiSpider(res.Response.Body) {
-			//换代理
-			mProxyGenerator.ChangeProxy(&res.UsedProxy)
-			//重新把task加入队列
-			task := *res.GetInitialTask()
-			fmt.Println("被反爬虫了或者出现错误， 重新加入task：", task.Url)
-			processor.AddTask(task)
-		}
-		return
-	}
+	var bras []Bra
+	mDb.Find(&bras)
 	for i := 0; i < len(bras); i++ {
 		bra := &bras[i]
-		rows_affected := mDb.Create(bra).RowsAffected // add bra to db
-		if rows_affected == 0 {                       //已经添加过了
-			continue
-		}
-		task_url := "https://rate.tmall.com/list_detail_rate.htm?itemId=" + bra.ItemId + "&sellerId=" + bra.SellerId + "&currentPage=10000&pageSize=1000000"
+		task_url := "https://rate.tmall.com/list_detail_rate.htm?itemId=" + bra.ItemId + "&sellerId=" + bra.SellerId + "&currentPage=1&pageSize=1000000"
 		braByte, err := json.Marshal(bra)
 		if err != nil {
 			continue
@@ -122,7 +97,7 @@ func ParseItem(res *model.Result, processor model.Processor) {
 			Identifier: PARSE_BRA_RATE_NUM,
 			Url:        task_url,
 			UserData:   braByte}
-		processor.AddTask(task)
+		mCrawler.AddBaseTask(task)
 	}
 }
 
@@ -168,7 +143,8 @@ func ParseBraRateNum(res *model.Result, processor model.Processor) {
 	if err != nil {
 		return
 	}
-	for i := 0; i <= rate_num; i++ {
+	//添加任务
+	for i := 2; i <= rate_num; i++ {
 		url := "https://rate.tmall.com/list_detail_rate.htm?itemId=" + bra.ItemId +
 			"&sellerId=" + bra.SellerId + "&currentPage=" +
 			strconv.FormatInt(int64(i), 10) + "&pageSize=1000000"
@@ -177,20 +153,12 @@ func ParseBraRateNum(res *model.Result, processor model.Processor) {
 			Url:        url}
 		processor.AddTask(task)
 	}
-}
-
-//检查
-func checkItemAntiSpider(body []byte) bool {
-	tag := "url"
-	js, err := simplejson.NewJson(body)
-	if err != nil {
-		return true
+	//解析数据
+	bra_rates := parse_bra_rate(res.Response.Body)
+	for i := 0; i < len(bra_rates); i++ {
+		bra_rate := &bra_rates[i]
+		mDb.Create(bra_rate)
 	}
-	_, ok := js.CheckGet(tag)
-	if ok {
-		return true
-	}
-	return false
 }
 
 func checkItemRateAntiSpider(data []byte) bool {
@@ -200,33 +168,6 @@ func checkItemRateAntiSpider(data []byte) bool {
 		return true
 	}
 	return false
-}
-
-func parse_bras(body []byte) (bras []Bra) {
-	bras = []Bra{}
-
-	js, err := simplejson.NewJson(body)
-	if err != nil {
-		return
-	}
-	items, err := js.Get("listItem").Array()
-	if err != nil {
-		return
-	}
-	if len(items) == 0 {
-		return
-	}
-	for i := range items {
-		item := items[i].(map[string]interface{})
-		bra := Bra{
-			ItemId:       item["item_id"].(string),
-			SellerId:     item["userId"].(string),
-			Title:        item["title"].(string),
-			CommentCount: item["commentCount"].(string)}
-		fmt.Println(bra.ItemId, bra.Title)
-		bras = append(bras, bra)
-	}
-	return
 }
 
 func parse_bra_rate_num(body []byte) int {
@@ -248,7 +189,9 @@ func parse_bra_rate(body []byte) (bra_rates []BraRate) {
 	data := "{" + string(body) + "}"
 	cd, err := iconv.Open("utf-8", "gbk") // convert gbk to utf-8
 	if err != nil {
+		fmt.Println(err)
 		fmt.Println("iconv.Open failed!")
+
 		return bra_rates
 	}
 	defer cd.Close()
@@ -316,8 +259,8 @@ RETRY:
 	ip_and_port_strs := reg_ip_and_port.FindAllString(string(data), -1)
 	for k, v := range ip_and_port_strs {
 		strs := strings.Split(v, ":")
-		this.proxy_list[k] = model.Proxy{IP: strs[0], Port: strs[1], Type: model.TYPE_HTTP}
-		fmt.Println("Get proxy from proxy server, ip:", strs[0], "port:", strs[1])
+		this.proxy_list[k] = model.Proxy{IP: strs[0], Port: strs[1]}
+		fmt.Println("Get proxy from network, ip:", strs[0], "port:", strs[1])
 	}
 	this.index = 0
 }
@@ -331,6 +274,6 @@ func (this *MyProxyGenerator) GetProxy() model.Proxy {
 	}
 
 	proxy := this.proxy_list[this.index]
-	//fmt.Println("Get IP:", proxy.IP, "  Port:", proxy.Port)
+	fmt.Println("Get IP:", proxy.IP, "  Port:", proxy.Port)
 	return proxy
 }

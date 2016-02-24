@@ -34,45 +34,6 @@ dependency.bat
 db, err := gorm.Open("mysql", "root:root@/taobao?charset=utf8&parseTime=True&loc=Local")
 ```
 代码用到了mysql数据库，当然你也可以使用sqlite3或者postgreSQL,只要更改驱动就okay。
-## 单机模式
-```
-cd single
-go run bra_crawler.go
-```
-## 集群模式
-### 搭建zk环境
-Check out the zookeeper configuration <a href="http://zookeeper.apache.org/doc/r3.4.6/zookeeperStarted.html">here</a>.
-### Master结点
-更改配置文件，主要修改ZkHosts，根据自己的ip以及设置的通信端口来定。
-``` json
-{
-    "AppName": "taobao-bra-crawler",
-    "IsMaster": true,
-    "ThreadNum": 2000,
-    "LockerTimeout": 10,
-    "ZkTimeOut": 600,
-    "ZkHosts": [
-        "192.168.1.102:2181" //zookeeper配置，这里是zk单机运行
-    ]
-}
-```
-### Worker结点
-更改配置文件，把IsMaster改为false
-``` json
-{
-    "AppName": "taobao-bra-crawler",
-    "IsMaster": false,
-    "ThreadNum": 2000,
-    "LockerTimeout": 10,
-    "ZkTimeOut": 600,
-    "ZkHosts": [
-        "192.168.1.102:2181" //zookeeper配置，这里是zk单机运行
-    ]
-}
-```
-### 运行
-```
-go run bra_crawler.go config.json
-```
+
 ## License
 MIT

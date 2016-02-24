@@ -1,0 +1,10 @@
+{
+    "AppName": "taobao-bra-crawler",
+    "IsMaster": true,
+    "ThreadNum": 2000,
+    "LockerTimeout": 10,
+    "ZkTimeOut": 600,
+    "ZkHosts": [
+        "127.0.0.1:2181"
+    ]
+}
