@@ -68,7 +68,7 @@ func main() {
 	defer db.Close()
 	//创建一个本地爬虫，用sql数据库存储任务队列，这里使用mysql
 	mCrawler = crawler.NewLocalSqlCrawler(&db, thread_num)
-	//addBaseTasks()
+	addBaseTasks()
 	//设置解析器
 	braRateParser := model.Parser{Identifier: PARSE_BRA_RATE, Parse: ParseBraRate}
 	braRateNumParser := model.Parser{Identifier: PARSE_BRA_RATE_NUM, Parse: ParseBraRateNum}
