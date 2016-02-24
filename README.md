@@ -57,7 +57,7 @@ const (
 
 #### 集群部署（目前不稳定）
 分布式部署需要配置一下zookeeper，
-<a href="http://zookeeper.apache.org/doc/r3.4.6/zookeeperStarted.html">点击这里查看</a>.。
+<a href="http://zookeeper.apache.org/doc/r3.4.6/zookeeperStarted.html">点击这里查看</a>。<br>
 接下来看一下crawler/bra_rates_crawler/single目录下的config.json
 ``` json
 {
