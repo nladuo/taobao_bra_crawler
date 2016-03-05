@@ -1,4 +1,5 @@
 # taobao_bra_crawler
+a taobao web crawler just for fun.
 
 ## 说明
 淘宝文胸商品评论内容爬取与简单分析，支持单机爬取和分布式爬取。<br>
