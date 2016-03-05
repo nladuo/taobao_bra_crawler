@@ -33,11 +33,11 @@ type BraRate struct {
 }
 
 const (
-	thread_num    int = 200
-	GET_PROXY_URL     = "http://www.89ip.cn/api/?tqsl=10&cf=1"
-	//GET_PROXY_URL             = "http://www.66ip.cn/getzh.php?getzh=mmpvmxywnwomuvw&getnum=10&isp=0&anonymoustype=4&start=&ports=&export=&ipaddress=&area=1&proxytype=0&api=https"
+	thread_num         int    = 500
+	GET_PROXY_URL      string = "http://www.89ip.cn/api/?tqsl=10&cf=1"
 	PARSE_BRA_RATE     string = "解析商品评论信息"
 	PARSE_BRA_RATE_NUM string = "解析商品评论数量"
+	PPROF_PORT                = "6060"
 )
 
 var (
@@ -78,6 +78,8 @@ func main() {
 	//设置代理生成器
 	mProxyGenerator = NewMyProxyGenerator()
 	mCrawler.SetProxyGenerator(mProxyGenerator)
+	//使用net/pprof，查看状态
+	mCrawler.SetPProfPort(PPROF_PORT)
 	//开始运行
 	mCrawler.Run()
 }
@@ -102,7 +104,8 @@ func addBaseTasks() {
 
 //解析文胸商品的评论
 func ParseBraRate(res *model.Result, processor model.Processor) {
-	fmt.Println(string(res.Response.Body))
+	fmt.Println("parse bra rate")
+	//fmt.Println(string(res.Response.Body))
 	bra_rates := parse_bra_rate(res.Response.Body)
 
 	if len(bra_rates) == 0 {
@@ -125,8 +128,8 @@ func ParseBraRate(res *model.Result, processor model.Processor) {
 
 //解析文胸商品的页数
 func ParseBraRateNum(res *model.Result, processor model.Processor) {
-	fmt.Println(string(res.Response.Body))
-
+	//fmt.Println(string(res.Response.Body))
+	fmt.Println("parse bra rate num")
 	rate_num := parse_bra_rate_num(res.Response.Body)
 	if rate_num == 0 {
 		if checkItemRateAntiSpider(res.Response.Body) {
@@ -193,15 +196,17 @@ func parse_bra_rate(body []byte) (bra_rates []BraRate) {
 
 		return bra_rates
 	}
-	defer cd.Close()
 	data = cd.ConvString(data)
+	//defer cd.Close() ////不使用defer语句，提升性能
 
 	js, err := simplejson.NewJson([]byte(data))
 	if err != nil {
+		cd.Close()
 		return
 	}
 	rates, err := js.Get("rateDetail").Get("rateList").Array()
 	if err != nil {
+		cd.Close()
 		return
 	}
 	for i := range rates {
@@ -212,6 +217,7 @@ func parse_bra_rate(body []byte) (bra_rates []BraRate) {
 		fmt.Println(bra_rate.SizeInfo, "   ", bra_rate.RateContent)
 		bra_rates = append(bra_rates, bra_rate)
 	}
+	cd.Close()
 	return
 }
 
@@ -226,12 +232,12 @@ func NewMyProxyGenerator() *MyProxyGenerator {
 	var generator MyProxyGenerator
 	generator.lock = &sync.Mutex{}
 	generator.index = 10
+	generator.updateProxyList()
 	return &generator
 }
 
 func (this *MyProxyGenerator) ChangeProxy(proxy *model.Proxy) {
 	this.lock.Lock()
-	defer this.lock.Unlock()
 
 	if this.index >= 10 {
 		this.updateProxyList()
@@ -242,6 +248,7 @@ func (this *MyProxyGenerator) ChangeProxy(proxy *model.Proxy) {
 		//change proxy
 		this.index++
 	}
+	this.lock.Unlock()
 }
 
 func (this *MyProxyGenerator) updateProxyList() {
@@ -256,6 +263,9 @@ RETRY:
 	}
 	reg_ip_and_port := regexp.MustCompile(`[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\:[0-9]*`)
 	ip_and_port_strs := reg_ip_and_port.FindAllString(string(data), -1)
+	if len(ip_and_port_strs) != 10 {
+		goto RETRY
+	}
 	for k, v := range ip_and_port_strs {
 		strs := strings.Split(v, ":")
 		this.proxy_list[k] = model.Proxy{IP: strs[0], Port: strs[1]}
@@ -266,13 +276,12 @@ RETRY:
 
 func (this *MyProxyGenerator) GetProxy() model.Proxy {
 	this.lock.Lock()
-	defer this.lock.Unlock()
-
 	if this.index >= 10 {
 		this.updateProxyList()
 	}
 
 	proxy := this.proxy_list[this.index]
 	fmt.Println("Get IP:", proxy.IP, "  Port:", proxy.Port)
+	this.lock.Unlock()
 	return proxy
 }
