@@ -26,10 +26,9 @@ type Bra struct {
 }
 
 const (
-	thread_num    int = 100
-	GET_PROXY_URL     = "http://www.89ip.cn/api/?tqsl=10&cf=1" //一个免费的代理服务器
-	//GET_PROXY_URL        = "http://www.66ip.cn/getzh.php?getzh=mmpvmxywnwomuvw&getnum=10&isp=0&anonymoustype=4&start=&ports=&export=&ipaddress=&area=1&proxytype=0&api=https"
-	PARSE_ITEM string = "解析商品信息"
+	thread_num    int    = 100
+	GET_PROXY_URL        = "http://www.89ip.cn/api/?tqsl=10&cf=1" //一个免费的代理服务器
+	PARSE_ITEM    string = "解析商品信息"
 )
 
 var (
@@ -93,15 +92,15 @@ func addBaseTasks() {
 }
 
 //解析文胸商品条目
-func ParseItem(res *model.Result, processor model.Processor) {
+func ParseItem(res model.Result, processor model.Processor) {
 	fmt.Println(string(res.Response.Body))
 	bras := parse_bras(res.Response.Body)
 	if len(bras) == 0 {
 		if checkItemAntiSpider(res.Response.Body) {
 			//换代理
-			mProxyGenerator.ChangeProxy(&res.UsedProxy)
+			mProxyGenerator.ChangeProxy(res.UsedProxy)
 			//重新把task加入队列
-			task := *res.GetInitialTask()
+			task := res.GetInitialTask()
 			fmt.Println("被反爬虫了或者出现错误， 重新加入task：", task.Url)
 			processor.AddTask(task)
 		}
@@ -168,7 +167,7 @@ func NewMyProxyGenerator() *MyProxyGenerator {
 	return &generator
 }
 
-func (this *MyProxyGenerator) ChangeProxy(proxy *model.Proxy) {
+func (this *MyProxyGenerator) ChangeProxy(proxy model.Proxy) {
 	this.lock.Lock()
 	defer this.lock.Unlock()
 

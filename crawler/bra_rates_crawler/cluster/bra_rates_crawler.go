@@ -114,7 +114,7 @@ func addBaseTasks() {
 }
 
 //解析文胸商品的评论
-func ParseBraRate(res *model.Result, processor model.Processor) {
+func ParseBraRate(res model.Result, processor model.Processor) {
 	fmt.Println("parse bra rate")
 	//fmt.Println(string(res.Response.Body))
 	bra_rates := parse_bra_rate(res.Response.Body)
@@ -122,9 +122,9 @@ func ParseBraRate(res *model.Result, processor model.Processor) {
 	if len(bra_rates) == 0 {
 		if checkItemRateAntiSpider(res.Response.Body) {
 			//换代理
-			mProxyGenerator.ChangeProxy(&res.UsedProxy)
+			mProxyGenerator.ChangeProxy(res.UsedProxy)
 			//重新把task加入队列
-			task := *res.GetInitialTask()
+			task := res.GetInitialTask()
 			fmt.Println("被反爬虫了被反爬虫了或者出现错误， 重新加入task：", task.Url)
 			processor.AddTask(task)
 		}
@@ -138,13 +138,13 @@ func ParseBraRate(res *model.Result, processor model.Processor) {
 }
 
 //解析文胸商品的页数
-func ParseBraRateNum(res *model.Result, processor model.Processor) {
+func ParseBraRateNum(res model.Result, processor model.Processor) {
 	//fmt.Println(string(res.Response.Body))
 	fmt.Println("parse bra rate num")
 	rate_num := parse_bra_rate_num(res.Response.Body)
 	if rate_num == 0 {
 		if checkItemRateAntiSpider(res.Response.Body) {
-			task := *res.GetInitialTask()
+			task := res.GetInitialTask()
 			fmt.Println("被反爬虫了被反爬虫了或者出现错误， 重新加入task：", task.Url)
 			processor.AddTask(task)
 		}
@@ -247,7 +247,7 @@ func NewMyProxyGenerator() *MyProxyGenerator {
 	return &generator
 }
 
-func (this *MyProxyGenerator) ChangeProxy(proxy *model.Proxy) {
+func (this *MyProxyGenerator) ChangeProxy(proxy model.Proxy) {
 	this.lock.Lock()
 
 	if this.index >= 10 {

@@ -8,12 +8,7 @@ import (
 	"github.com/jinzhu/gorm"
 	crawler "github.com/nladuo/go-webcrawler"
 	"github.com/nladuo/go-webcrawler/model"
-	"io/ioutil"
-	"net/http"
-	"regexp"
 	"strconv"
-	"strings"
-	"sync"
 	"time"
 )
 
@@ -31,9 +26,8 @@ const (
 )
 
 var (
-	mDb             *gorm.DB
-	mCrawler        *crawler.Crawler
-	mProxyGenerator *MyProxyGenerator
+	mDb      *gorm.DB
+	mCrawler *crawler.Crawler
 )
 
 //mysql配置
@@ -62,9 +56,6 @@ func main() {
 	itemParser := model.Parser{Identifier: PARSE_ITEM, Parse: ParseItem}
 	//添加解析器
 	mCrawler.AddParser(itemParser)
-	//设置代理生成器
-	mProxyGenerator = NewMyProxyGenerator()
-	mCrawler.SetProxyGenerator(mProxyGenerator)
 	//设置超时
 	mCrawler.SetProxyTimeOut(10 * time.Second)
 	//开始运行
@@ -91,15 +82,13 @@ func addBaseTasks() {
 }
 
 //解析文胸商品条目
-func ParseItem(res *model.Result, processor model.Processor) {
+func ParseItem(res model.Result, processor model.Processor) {
 	fmt.Println(string(res.Response.Body))
 	bras := parse_bras(res.Response.Body)
 	if len(bras) == 0 {
 		if checkItemAntiSpider(res.Response.Body) {
-			//换代理
-			mProxyGenerator.ChangeProxy(&res.UsedProxy)
 			//重新把task加入队列
-			task := *res.GetInitialTask()
+			task := res.GetInitialTask()
 			fmt.Println("被反爬虫了或者出现错误， 重新加入task：", task.Url)
 			processor.AddTask(task)
 		}

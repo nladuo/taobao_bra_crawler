@@ -6,7 +6,7 @@ a taobao web crawler just for fun.
 效果展示：[http://vps.kalen25115.cn/bra](http://vps.kalen25115.cn/bra/)
 
 ## 注意
-由于使用github.com/qiniu/iconv库的原因，目前好像不支持go1.6版本。测试使用的是go1.5.3版本。
+由于使用github.com/qiniu/iconv库的原因，目前好像go1.6版本有些问题。测试使用的是go1.5.3版本。
 
 ## 项目状态
 测试中，目前都不是很稳定。
@@ -79,8 +79,7 @@ go run bra_rates_crawler.go config.json
 用go run再加上config.json参数就okay。
 
 ##代理ip说明
-代码中使用的代理ip来自免费的代理ip服务器，（http://www.89ip.cn 这个网站）。免费代理ip不太稳定，而且可能不是高匿名的，可以换收费的试试。
-
+代码中使用的代理ip来自免费的代理ip服务器，（http://www.89ip.cn 这个网站）。免费代理ip不太稳定，而且可能不是高匿名的，可以换收费的试试。<br>
 ## 爬取后的分析
 当爬到一定的商品数据之后，就可以进行一定的分析了，简单的分析测试在simple_analyser.go中，修改一下mysql的配置，直接go run就好了。
 ``` go
@@ -97,7 +96,6 @@ go run simple_analyser.go >> bra.json
 sudo su             #切换root
 ulimit -n 50000     #设置一个程序可以打开5万个文件
 ```
-
 
 ## License
 MIT
