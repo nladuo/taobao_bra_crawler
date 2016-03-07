@@ -16,6 +16,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 )
 
 type Bra struct {
@@ -49,7 +50,7 @@ var (
 //mysql配置
 const (
 	DB_USER   = "root"
-	DB_PASSWD = "l82566258"
+	DB_PASSWD = "root"
 	DB_HOST   = "localhost"
 	DB_PORT   = "3306"
 	DBNAME    = "taobao"
@@ -78,6 +79,8 @@ func main() {
 	//设置代理生成器
 	mProxyGenerator = NewMyProxyGenerator()
 	mCrawler.SetProxyGenerator(mProxyGenerator)
+	//设置超时
+	mCrawler.SetProxyTimeOut(85 * time.Second)
 	//使用net/pprof，查看状态
 	mCrawler.SetPProfPort(PPROF_PORT)
 	//开始运行
