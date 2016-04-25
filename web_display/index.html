@@ -181,12 +181,12 @@ option_details = {
     yAxis : [
         {
             type : 'value',
-            name : '人数',
+            name : '人数/%',
             min: 0,
             max: 20,
             interval:5,
             axisLabel : {
-                formatter: '{value} %'
+                formatter: '{value}'
             }
         }
        
@@ -249,7 +249,7 @@ $(".previous").click(function(){
 });
 $(".next").click(function(){
 if (basic_div.is(":visible")){
-    $("#color").width(document.body.clientWidth*0.8);
+    $("#color").width(document.body.clientWidth*0.7);
    var myChart_color = echarts.init(document.getElementById('color'));
     myChart_color.setOption(option_color);
     basic_div.css('display','none');
@@ -258,7 +258,7 @@ if (basic_div.is(":visible")){
     //myChart_color.resize($(color).width());
   }
   else if (color_div.is(":visible")){
-    $("#details").width(document.body.clientWidth*0.8);
+    $("#details").width(document.body.clientWidth*0.7);
     var myChart_details = echarts.init(document.getElementById('details'));
     myChart_details.setOption(option_details);
     color_div.css('display','none');
@@ -267,7 +267,7 @@ if (basic_div.is(":visible")){
     //myChart_details.resize($(details).width());
   }
   else if (details_div.is(":visible")){
-    $("#basic").width(document.body.clientWidth*0.8);
+    $("#basic").width(document.body.clientWidth*0.7);
     var myChart_basic = echarts.init(document.getElementById('basic'));
     myChart_basic.setOption(option_basic);
     details_div.css('display','none');
