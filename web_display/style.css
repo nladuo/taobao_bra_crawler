@@ -8,16 +8,16 @@ body {
     background: #E6E6FA;
 }
 #basic {
-	width: 70%;height:540px;
+	width: 70%;height:530px;
     margin: 0 auto;
 
 }
 #color {
-	width: 70%;height:540px;
+	width: 70%;height:530px;
     margin: 0 auto; display: none;
 }
 #details {
-	width: 70%;height:540px;
+	width: 70%;height:530px;
     margin: 0 auto; display: none;
 }
 .linear{
