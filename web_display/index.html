@@ -5,13 +5,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
-  <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css"  />
+  <link rel="stylesheet" href="/bra/css/bootstrap.min.css" type="text/css"  />
 
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-  <title>The Exposition of Sales on TaoBao Bras</title>
-  <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+  <title>Exposition</title>
+  <script type="text/javascript" src="js/jquery-1.12.3.min.js"></script>
   <script type="text/javascript" src="js/bootstrap.min.js"></script>
-  <script src="js/echarts.common.min.js"></script>
+  <script src="js/echarts.min.js"></script>
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -88,8 +88,9 @@ option_color = {
         formatter: "{a} <br/>{b} : {c} ({d}%)"
     },
     legend: {
-        orient: 'vertical',
-        left: 'left',
+        orient: 'horizontal',
+        y:'60px',
+        left: 'center',
         data: type_color
     },
     series : [
@@ -121,8 +122,9 @@ option_color = {
         formatter: "{a} <br/>{b} : {c} ({d}%)"
     },
     legend: {
-        orient: 'vertical',
-        left: 'left',
+        orient: 'horizontal',
+        y:'60px',
+        left: 'center',
         data: type_basic
     },
     series : [
@@ -147,7 +149,7 @@ option_color = {
 option_details = {
     title : {
         text: '各胸围尺寸所占人数柱状图',
-        subtext: '仅具参考意义',
+        /*subtext: '仅具参考意义',*/
         x:'center'
     },
     tooltip : {
@@ -165,9 +167,10 @@ option_details = {
     },
     calculable : true,
     legend: {
-        orient: 'vertical',
-        left: 'left',
-        data:['各胸围尺寸所占的人数百分比']
+        orient: 'horizontal',
+        y:'30px',
+        left: 'center',
+        data:['各尺寸所占人数百分比']
     },
     xAxis : [
         {
@@ -191,7 +194,7 @@ option_details = {
     series : [
 
         {
-            name:'各胸围尺寸所占的人数百分比',
+            name:'各尺寸所占人数百分比',
             type:'bar',
             data:data_size,
             color:'#191970'
@@ -203,6 +206,8 @@ option_details = {
         myChart_color.setOption(option_color);
         myChart_basic.setOption(option_basic);
         myChart_details.setOption(option_details);
+       /* window.onresize = myChart_color.chart.resize();
+        window.onresize =  myChart_details.chart.resize();*/
 });
 //左右翻页显示
   basic_div=$("#basic");
@@ -212,51 +217,107 @@ option_details = {
 
 $(".previous").click(function(){
   if (basic_div.is(":visible")){
+    $("#details").width(document.body.clientWidth*0.8);
     var myChart_details = echarts.init(document.getElementById('details'));
     myChart_details.setOption(option_details);
-    basic_div.hide();
-    color_div.hide();
+    basic_div.css('display','none');
+    color_div.css('display','none');
     details_div.fadeIn("slow");
+   // myChart_details.resize($(details).width());
+
   }
   else if (color_div.is(":visible")){
+      $("#basic").width(document.body.clientWidth*0.8);
     var myChart_basic = echarts.init(document.getElementById('basic'));
     myChart_basic.setOption(option_basic);
-    color_div.hide();
+    color_div.css('display','none');
     basic_div.fadeIn("slow");
-    details_div.hide();
+    details_div.css('display','none');
+      //myChart_basic.resize($(basic).width());
+
   }
   else if (details_div.is(":visible")){
+      $("#color").width(document.body.clientWidth*0.8);
     var myChart_color = echarts.init(document.getElementById('color'));
     myChart_color.setOption(option_color);
-    details_div.hide();
+    details_div.css('display','none');
     color_div.fadeIn("slow");
-    basic_div.hide();
+    basic_div.css('display','none');
+      //myChart_color.resize($(color).width());
+
   }
 });
 $(".next").click(function(){
 if (basic_div.is(":visible")){
+    $("#color").width(document.body.clientWidth*0.8);
    var myChart_color = echarts.init(document.getElementById('color'));
     myChart_color.setOption(option_color);
-    basic_div.hide();
+    basic_div.css('display','none');
     color_div.fadeIn("slow");
-    details_div.hide();
+    details_div.css('display','none');
+    //myChart_color.resize($(color).width());
   }
   else if (color_div.is(":visible")){
+    $("#details").width(document.body.clientWidth*0.8);
     var myChart_details = echarts.init(document.getElementById('details'));
     myChart_details.setOption(option_details);
-    color_div.hide();
-    basic_div.hide();
+    color_div.css('display','none');
+    basic_div.css('display','none');
     details_div.fadeIn("slow");
+    //myChart_details.resize($(details).width());
   }
   else if (details_div.is(":visible")){
+    $("#basic").width(document.body.clientWidth*0.8);
     var myChart_basic = echarts.init(document.getElementById('basic'));
     myChart_basic.setOption(option_basic);
-    details_div.hide();
-    color_div.hide();
+    details_div.css('display','none');
+    color_div.css('display','none');
     basic_div.fadeIn("slow");
-  }
+    //myChart_basic.resize($(basic).width());
+
+}
 });
+
+ var height=document.documentElement.clientHeight;
+      $('.linear').css('height',height);
+      $('#main').css('height',height);
     </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
