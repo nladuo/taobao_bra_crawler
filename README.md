@@ -3,7 +3,7 @@ a taobao web crawler just for fun.
 
 ## 说明
 淘宝文胸商品评论内容爬取与简单分析，支持单机爬取和分布式爬取。<br>
-效果展示：[http://vps.kalen25115.cn/bra](http://vps.kalen25115.cn/bra/)
+效果展示：[http://nladuo.github.io/bra](http://nladuo.github.io/bra)
 
 ## 注意
 由于使用github.com/qiniu/iconv库的原因，目前好像go1.6版本有些问题。测试使用的是go1.5.3版本。
