@@ -44,13 +44,13 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	mDb = &db
+	mDb = db
 	//创建表用来储存文胸商品的基本信息
 	if !db.HasTable(&Bra{}) {
 		db.CreateTable(&Bra{})
 	}
 	//创建一个本地爬虫，用sql数据库存储任务队列，这里使用mysql
-	mCrawler = crawler.NewLocalSqlCrawler(&db, thread_num)
+	mCrawler = crawler.NewLocalSqlCrawler(db, thread_num)
 	addBaseTasks()
 	//设置解析器
 	itemParser := model.Parser{Identifier: PARSE_ITEM, Parse: ParseItem}

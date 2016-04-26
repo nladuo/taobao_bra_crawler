@@ -61,14 +61,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	mDb = &db
+	mDb = db
 	//创建表用来储存文胸商品评论内容
 	if !db.HasTable(&BraRate{}) {
 		db.CreateTable(&BraRate{})
 	}
 	defer db.Close()
 	//创建一个本地爬虫，用sql数据库存储任务队列，这里使用mysql
-	mCrawler = crawler.NewLocalSqlCrawler(&db, thread_num)
+	mCrawler = crawler.NewLocalSqlCrawler(db, thread_num)
 	addBaseTasks()
 	//设置解析器
 	braRateParser := model.Parser{Identifier: PARSE_BRA_RATE, Parse: ParseBraRate}
