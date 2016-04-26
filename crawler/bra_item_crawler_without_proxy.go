@@ -59,6 +59,7 @@ func main() {
 	//设置超时
 	mCrawler.SetProxyTimeOut(10 * time.Second)
 	//开始运行
+	fmt.Println("Crawler Starting....")
 	mCrawler.Run()
 }
 
@@ -115,6 +116,7 @@ func checkItemAntiSpider(body []byte) bool {
 }
 
 func parse_bras(body []byte) (bras []Bra) {
+
 	bras = []Bra{}
 
 	js, err := simplejson.NewJson(body)
@@ -130,6 +132,9 @@ func parse_bras(body []byte) (bras []Bra) {
 	}
 	for i := range items {
 		item := items[i].(map[string]interface{})
+		if item["userId"] == nil {
+			continue
+		}
 		bra := Bra{
 			ItemId:       item["item_id"].(string),
 			SellerId:     item["userId"].(string),

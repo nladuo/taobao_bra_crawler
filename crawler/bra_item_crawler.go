@@ -42,7 +42,7 @@ const (
 	DB_USER   = "root"
 	DB_PASSWD = "root"
 	DB_HOST   = "localhost"
-	DB_PORT   = "6060"
+	DB_PORT   = "3306"
 	DBNAME    = "taobao"
 )
 
@@ -69,6 +69,7 @@ func main() {
 	//设置超时
 	mCrawler.SetProxyTimeOut(10 * time.Second)
 	//开始运行
+	fmt.Println("Crawler Starting....")
 	mCrawler.Run()
 }
 
@@ -142,6 +143,9 @@ func parse_bras(body []byte) (bras []Bra) {
 	}
 	for i := range items {
 		item := items[i].(map[string]interface{})
+		if item["userId"] == nil {
+			continue
+		}
 		bra := Bra{
 			ItemId:       item["item_id"].(string),
 			SellerId:     item["userId"].(string),

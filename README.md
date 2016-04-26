@@ -26,13 +26,6 @@ cd taobao_bra_crawler
 chmod +x dependency.sh
 ./dependency.sh
 ```
-
-### Windows
-``` shell
-git clone https://github.com/nladuo/taobao_bra_crawler.git
-cd taobao_bra_crawler
-dependency.bat
-```
 ## 爬虫部署流程
 ### 1. 爬取商品的记录
 crawler文件下的每个go文件都有下面数据库的配置信息，根据自己的情况修改一下mysql的配置，并创建数据库taobao。
