@@ -3,6 +3,7 @@ a taobao web crawler just for fun.
 
 ## 说明
 淘宝文胸商品评论内容爬取与简单分析，支持单机爬取和分布式爬取。<br>
+测试环境：ubuntu-14.04, 单核1G<br>
 效果展示：[http://nladuo.github.io/bra](http://nladuo.github.io/bra)
 
 ## 注意
