@@ -48,13 +48,13 @@ const (
 一台机器爬的话，还是和之前一样，就修改一下mysql的配置，直接用go run就可以了。
 代码在crawler/bra_rates_crawler/single目录中。
 
-#### 集群部署（目前不稳定,容易卡住不动）
+#### 集群部署
 分布式部署需要首先配置一下zookeeper，<a href="http://zookeeper.apache.org/doc/r3.4.6/zookeeperStarted.html">点击这里查看</a>。<br><br>
 把zookeeper启动起来之后，来看一下crawler/bra_rates_crawler/single目录下的config.json
 ``` json
 {
     "AppName": "taobao-bra-crawler",
-    "IsMaster": true,
+    "IsMaster": true/false,
     "ThreadNum": 200,
     "LockerTimeout": 10,
     "ZkTimeOut": 600,
@@ -64,12 +64,13 @@ const (
 }
 ```
 这里主要修改一下ZkHosts，这里是个json数组，如果是zk集群，按照相应的填写就可以了。<br><br>
-还有就是IsMaster，只有一台机器可以设置为true。其他的机器修改为false，就可以了。<br><br>
+还有就是IsMaster，只有一台机器可以设置为true。其他的机器修改为false，就可以了。
+master结点负责添加初始的url(s)，添加url之后会变成和worker相同的结点。<br><br>
 运行方式:
 ``` go
-go run bra_rates_crawler.go config.json
+go run bra_rates_crawler.go master_config.json #启动master结点
+go run bra_rates_crawler.go worker_config.json #启动worker结点
 ```
-用go run再加上config.json参数就okay。
 
 ##代理ip说明
 代码中使用的代理ip来自免费的代理ip服务器，（http://www.89ip.cn 这个网站）。免费代理ip不太稳定，而且可能不是高匿名的，可以换收费的试试。<br>
@@ -86,8 +87,9 @@ go run simple_analyser.go >> bra.json
 #### 出现大量too many open files的信息
 在linux下，因为socket也是文件，并发量比较高，需要重新设置一下最大文件打开的数量。
 ``` shell
-sudo su             #切换root
-ulimit -n 10000     #设置一个程序可以打开1万个文件
+sudo su                      #切换root
+ulimit -n 10000              #设置一个程序可以打开1万个文件
+go run bra_rates_crawler.go  #运行脚本
 ```
 
 ## License
