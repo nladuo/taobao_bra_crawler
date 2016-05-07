@@ -2,7 +2,7 @@
 a taobao web crawler just for fun.
 
 ## 说明
-淘宝文胸商品评论内容爬取与简单分析，支持单机爬取和分布式爬取。<br>
+淘宝文胸商品评论内容爬取与简单分析。<br>
 测试环境：ubuntu-14.04, 单核1G<br>
 效果展示：[http://nladuo.github.io/bra](http://nladuo.github.io/bra)
 
@@ -44,34 +44,8 @@ const (
 
 ### 2. 爬取文胸商品的评论
 爬取完商品用不了太长时间，如果不用代理的话，大概几十秒就可以爬到两千多。用代理的话，也不需要太久。<br><br>
-接下来就要开始爬取商品下的评论了，每个商品都有可能有一千条评论，这么算下来两千个商品记录最多应该有最多200万的评论，这么多数据，需要上代理了。（如果不用代理的话，大概只能爬到一万多评论）。
-#### 单机部署
-一台机器爬的话，还是和之前一样，就修改一下mysql的配置，直接用go run就可以了。
+接下来就要开始爬取商品下的评论了，每个商品都有可能有一千条评论，这么算下来两千个商品记录最多应该有最多200万的评论，这么多数据，需要上代理了。（如果不用代理的话，大概只能爬到一万多评论）。直接用go run就可以了。
 代码在crawler/bra_rates_crawler/single目录中。
-
-#### 集群部署
-分布式部署需要首先配置一下zookeeper，<a href="http://zookeeper.apache.org/doc/r3.4.6/zookeeperStarted.html">点击这里查看</a>。<br><br>
-把zookeeper启动起来之后，来看一下crawler/bra_rates_crawler/single目录下的config.json
-``` json
-{
-    "AppName": "taobao-bra-crawler",
-    "IsMaster": true/false,
-    "ThreadNum": 200,
-    "LockerTimeout": 10,
-    "ZkTimeOut": 600,
-    "ZkHosts": [
-        "127.0.0.1:2181"
-    ]
-}
-```
-这里主要修改一下ZkHosts，这里是个json数组，如果是zk集群，按照相应的填写就可以了。<br><br>
-还有就是IsMaster，只有一台机器可以设置为true。其他的机器修改为false，就可以了。
-master结点负责添加初始的url(s)，添加url之后会变成和worker相同的结点。<br><br>
-运行方式:
-``` go
-go run bra_rates_crawler.go master_config.json #启动master结点
-go run bra_rates_crawler.go worker_config.json #启动worker结点
-```
 
 ##代理ip说明
 代码中使用的代理ip来自免费的代理ip服务器，（http://www.89ip.cn 这个网站）。免费代理ip不太稳定，而且可能不是高匿名的，可以换收费的试试。<br>
@@ -84,7 +58,7 @@ go run simple_analyser.go >> bra.json
 
 ## 可能存在的bug
 #### 跑着跑着程序不动了，很久stdout都没有输出log信息
-此时可以停止掉爬虫，如果是单机模式运行的话把addBaseTasks()这行注释掉，然后再运行，会继续工作。如果是集群模式，如果是master结点，把配置文件中的IsMaster改成false就可以，如果不是master，直接重启就okay。
+此时可以停止掉爬虫，把addBaseTasks()这行注释掉，然后再运行，会继续工作。
 #### 出现大量too many open files的信息
 在linux下，因为socket也是文件，并发量比较高，需要重新设置一下最大文件打开的数量。
 ``` shell
