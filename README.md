@@ -62,7 +62,7 @@ go run simple_analyser.go >> bra.json
 #### 出现大量too many open files的信息
 在linux下，因为socket也是文件，并发量比较高，需要重新设置一下最大文件打开的数量。
 ``` shell
-sudo su                      #切换root
+su                      #切换root
 ulimit -n 10000              #设置一个程序可以打开1万个文件
 go run bra_rates_crawler.go  #运行脚本
 ```
