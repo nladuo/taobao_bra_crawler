@@ -11,7 +11,7 @@ a taobao web crawler just for fun.
 
 ## 爬虫部署
 ### 配置tor代理
-
+见[python中使用tor代理](http://nladuo.github.io/2016/07/17/python%E4%B8%AD%E4%BD%BF%E7%94%A8tor%E4%BB%A3%E7%90%86/)
 ### 运行代码
 
 ### 运行demo

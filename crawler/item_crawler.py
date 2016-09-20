@@ -12,13 +12,16 @@ class ItemCrawler:
 
     def run(self):
         urls = []
-        for i in range(1, 100):
+        for i in range(1, 100 + 1):
             urls.append("http://s.m.taobao.com/search?q=文胸&m=api4h5&page=" + str(i))
             urls.append("http://s.m.taobao.com/search?q=胸罩&m=api4h5&page=" + str(i))
 
         for url in urls:
             print url
             body = get_body(url)
+            if len(body) == 0:
+                add_failed_url(self.session, url)
+                continue
             items = self.__parse(body)
             self.__add_items(items)
 
@@ -45,7 +48,7 @@ class ItemCrawler:
         for item in items:
             if self.session.query(Item).filter(Item.item_id == item.item_id).count() == 0:
                 self.session.add(item)
-                self.session.commit()
+        self.session.commit()
 
     def __close(self):
         self.session.close()
