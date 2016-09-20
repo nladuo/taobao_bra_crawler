@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
+from gevent import monkey; monkey.patch_all()
+import gevent
 from model import *
 from utils import *
 import json
@@ -16,22 +18,23 @@ class RateCrawler:
             url = base_url % (item.item_id, item.seller_id, 1)
             try:
                 body = "{" + get_body(url).decode("gbk") + "}"
+                if len(body) == 2:
+                    add_failed_url(self.session, url)
+                    continue
             except:
                 add_failed_url(self.session, url)
                 continue
-            if len(body) == 2:
-                add_failed_url(self.session, url)
-                continue
+
             page_num = self.__parse_page_num(body)
             print item.title, ' ', item.item_id, '--------->' , page_num
+            tasks = []
+            bodys = []
             for i in range(1, page_num+1):
                 url = base_url % (item.item_id, item.seller_id, i)
-                print url
-                try:
-                    body = "{" + get_body(url).decode("gbk") + "}"
-                except:
-                    add_failed_url(self.session, url)
-                    continue
+                tasks.append(gevent.spawn(self.__async_get_rates, url, bodys))
+            for task in tasks: task.join()
+            print "adding data of item:%s" % item.item_id
+            for body in bodys:
                 if len(body) == 2:
                     add_failed_url(self.session, url)
                     continue
@@ -40,13 +43,22 @@ class RateCrawler:
             self.__update_item(item) # 把item的is_crawled设为1
         self.__close()
 
+    def __async_get_rates(self, url, bodys):
+        try:
+            body = "{" + get_body(url).decode("gbk") + "}"
+            bodys.append(body)
+        except:
+            add_failed_url(self.session, url)
+        print url
+
+
     def __parse_page_num(self, body):
         try:
             data = json.loads(body)
+            page_num = data['rateDetail']['paginator']['lastPage']
+            return page_num
         except:
             return 0
-        page_num = data['rateDetail']['paginator']['lastPage']
-        return page_num
 
 
     def __parse_rates(self, body):
