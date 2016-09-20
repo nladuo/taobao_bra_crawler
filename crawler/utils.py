@@ -23,14 +23,13 @@ def create_table(engine):
         Column('is_crawled', SmallInteger, nullable=False)
     )
 
-    # Table(
-    #     "rates", metadata,
-    #     Column('id', Integer, primary_key=True, autoincrement=True),
-    #     Column('item_id', VARCHAR(100), unique=True, nullable=False),
-    #     Column('seller_id', VARCHAR(100), nullable=False),
-    #     Column('title', VARCHAR(255), nullable=False),
-    #     Column('is_crawled', VARCHAR(255), nullable=False)
-    # )
-    #
+    Table(
+        "rates", metadata,
+        Column('id', Integer, primary_key=True, autoincrement=True),
+        Column('rate_id', Integer, unique=True, nullable=False),
+        Column('title', VARCHAR(255), nullable=False),
+        Column('is_crawled', VARCHAR(255), nullable=False)
+    )
+
 
     metadata.create_all(engine)

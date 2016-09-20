@@ -20,8 +20,7 @@ class ItemCrawler:
             print url
             body = get_body(url)
             items = self.__parse(body)
-            for item in items:
-                self.__add(item)
+            self.__add_items(items)
 
         self.__close()
 
@@ -42,10 +41,11 @@ class ItemCrawler:
 
 
 
-    def __add(self, item):
-        if self.session.query(Item).filter(Item.item_id == item.item_id).count() == 0:
-            self.session.add(item)
-            self.session.commit()
+    def __add_items(self, items):
+        for item in items:
+            if self.session.query(Item).filter(Item.item_id == item.item_id).count() == 0:
+                self.session.add(item)
+                self.session.commit()
 
     def __close(self):
         self.session.close()
