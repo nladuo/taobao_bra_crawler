@@ -2,19 +2,34 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, Integer, MetaData, Table, VARCHAR, SmallInteger
 import requests
+import requesocks
 from model import FailedUrl
+from config import *
 
 def init_session():
-    engine = create_engine('mysql+mysqlconnector://root:root@localhost:3306/taobao')
+    engine = create_engine('%s+%s://%s:%s@%s:%s/%s'
+                           % (config['db_type'], config['db_driver'], config['db_user'],
+                              config['db_pass'], config['db_host'],
+                              config['db_port'], config['db_name'] ) )
     create_table(engine)
     DBSession = sessionmaker(bind=engine)
     return DBSession()
 
+def get_http_client():
+    if config['use_tor_proxy']:
+        session = requesocks.session()
+        session.proxies = {'http': 'socks5://127.0.0.1:%d' % config['tor_proxy_port'],
+                           'https': 'socks5://127.0.0.1:%d' % config['tor_proxy_port']}
+        return session
+    else:
+        return requests.session()
+
 def get_body(url):
     retry_times = 0
+    client = get_http_client()
     while retry_times < 3:
         try:
-            content = requests.get(url, timeout=3).content
+            content = client.get(url, timeout=config['timeout']).content
             return content
         except:
             retry_times += 1
