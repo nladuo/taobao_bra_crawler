@@ -27,9 +27,14 @@ config = {
 ```
 如果有被禁IP的情况可以使用tor代理，将config['use_tor_proxy']设置为True，具体方法见[python中使用tor代理](http://nladuo.github.io/2016/07/17/python%E4%B8%AD%E4%BD%BF%E7%94%A8tor%E4%BB%A3%E7%90%86/)
 ### 运行爬虫
-``` python
+``` shell
 python crawler/item_crawler.py      #爬文胸的商品信息
 python crawler/rate_crawler.py      #爬文胸的评论信息
 python crawler/simple_analyzer.py   #统计数据
 ```
-### 运行demo
+### 运行网页显示
+``` shell
+cd web_display
+npm install
+npm run dev
+```

@@ -1,0 +1,42 @@
+
+html,body{
+  margin:0;
+  padding:0;
+  height: 100%;
+  width: 100%;
+}
+body {
+    font: 14px Helvetica, Arial, sans-serif;
+    background: #E6E6FA;
+}
+#app, #main{
+  height: 100%;
+}
+#basic {
+	  width: 70%;
+    height:100%;
+    margin: 0 auto;
+
+}
+#color {
+	  width: 70%;
+    height:530px;
+    margin: 0 auto;
+    /*display: none;*/
+}
+#details {
+	  width: 70%;
+    height: 530px;
+    margin: 0 auto;
+  /*display: none;*/
+}
+.linear{
+    width:100%;
+    background: -ms-linear-gradient(top,#FFFFFF,  #C1FFC1);        /* IE 10 */
+    background:-moz-linear-gradient(top,#FFFFFF,#C1FFC1);/*火狐*/
+    background:-webkit-gradient(linear, 0% 0%, 0% 100%,from(#FFFFFF), to(#C1FFC1));/*谷歌*/
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFFFFF), to(#C1FFC1));      /* Safari 4-5, Chrome 1-9*/
+    background: -webkit-linear-gradient(top, #FFFFFF, #C1FFC1);   /*Safari5.1 Chrome 10+*/
+    background: -o-linear-gradient(top, #FFFFFF, #C1FFC1);  /*Opera 11.10+*/
+
+}
