@@ -3,9 +3,11 @@
 
 from gevent import monkey; monkey.patch_all()
 import gevent
+from gevent import queue
 from model import *
 from utils import *
 import json
+import time
 
 class RateCrawler:
     def __init__(self):
@@ -26,15 +28,16 @@ class RateCrawler:
                 continue
 
             page_num = self.__parse_page_num(body)
-            print item.title, ' ', item.item_id, '--------->' , page_num
+            print item.title, ' ', item.item_id, '--------->' , page_num, time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
             tasks = []
-            bodys = []
+            q = gevent.queue.Queue()
             for i in range(1, page_num+1):
                 url = base_url % (item.item_id, item.seller_id, i)
-                tasks.append(gevent.spawn(self.__async_get_rates, url, bodys))
-            for task in tasks: task.join()
-            print "adding data of item:%s" % item.item_id
-            for body in bodys:
+                tasks.append(gevent.spawn(self.__async_get_rates, url, q))
+            gevent.joinall(tasks)
+            print "adding data of item:%s" % item.item_id,  time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
+            while not q.empty():
+                body = q.get()
                 if len(body) == 2:
                     add_failed_url(self.session, url)
                     continue
@@ -43,10 +46,10 @@ class RateCrawler:
             self.__update_item(item) # 把item的is_crawled设为1
         self.__close()
 
-    def __async_get_rates(self, url, bodys):
+    def __async_get_rates(self, url, q):
         try:
             body = "{" + get_body(url).decode("gbk") + "}"
-            bodys.append(body)
+            q.put(body)
         except:
             add_failed_url(self.session, url)
         print url
@@ -92,11 +95,4 @@ class RateCrawler:
 
 crawler = RateCrawler()
 crawler.run()
-# url = "https://rate.tmall.com/list_detail_rate.htm?itemId=536964054394&sellerId=2262562480&currentPage=1&pageSize=1000000"
-#
-# body = "{" + get_body(url).decode("gbk") + "}"
-#
-# data = json.loads(body)
-#
-# fileHandle = open ( 'test.txt', 'w' )
-# fileHandle.write(json.dumps(data['rateDetail']['rateList'][0]))
+
