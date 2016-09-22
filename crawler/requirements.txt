@@ -2,3 +2,4 @@ sqlalchemy
 requests
 requesocks
 gevent
+mysql-connector

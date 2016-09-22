@@ -4,6 +4,10 @@
 from model import *
 from utils import *
 import json
+import sys
+
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 class ItemCrawler:
 

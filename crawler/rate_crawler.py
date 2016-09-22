@@ -8,6 +8,10 @@ from model import *
 from utils import *
 import json
 import time
+import sys
+
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 class RateCrawler:
     def __init__(self):
