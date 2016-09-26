@@ -4,6 +4,7 @@ a taobao web crawler just for fun.
 ## 说明
 淘宝文胸商品评论内容爬取与简单分析。<br>
 测试环境：国外vps一台，系统是ubuntu-14.04<br>
+数据库： mongodb
 效果展示：[http://nladuo.github.io/bra](http://nladuo.github.io/bra)
 
 ## 项目状态
@@ -12,14 +13,13 @@ a taobao web crawler just for fun.
 ## 爬虫部署
 ### 修改配置文件
 ``` python
+# -*- coding:utf-8 -*-
 config = {
     'timeout' : 3,
-    'db_type': 'mysql',
-    'db_driver': 'mysqlconnector',
-    'db_user': 'root',
-    'db_pass': 'root',
+    # 'db_user': 'root',
+    # 'db_pass': 'root',
     'db_host': 'localhost',
-    'db_port': '3306',
+    'db_port': 27017,
     'db_name': 'taobao', #需创建taobao数据库
     'use_tor_proxy': False,
     'tor_proxy_port': 9050
