@@ -3,6 +3,7 @@
 
 from model import *
 from utils import *
+from config import *
 import json
 import sys
 
@@ -12,7 +13,9 @@ sys.setdefaultencoding('utf8')
 class ItemCrawler:
 
     def __init__(self):
-        self.session = init_session()
+        self.client = init_client()
+        self.db = self.client[config['db_name']]
+        self.collection = self.db.items
 
     def run(self):
         urls = []
@@ -24,7 +27,7 @@ class ItemCrawler:
             print url
             body = get_body(url)
             if len(body) == 0:
-                add_failed_url(self.session, url)
+                add_failed_url(self.db, url)
                 continue
             items = self.__parse(body)
             self.__add_items(items)
@@ -50,12 +53,12 @@ class ItemCrawler:
 
     def __add_items(self, items):
         for item in items:
-            if self.session.query(Item).filter(Item.item_id == item.item_id).count() == 0:
-                self.session.add(item)
-        self.session.commit()
+            if self.collection.find({'item_id': item.item_id}).count() == 0:
+                self.collection.insert(item.dict())
 
     def __close(self):
-        self.session.close()
+        self.client.close()
+
 
 
 crawler = ItemCrawler()

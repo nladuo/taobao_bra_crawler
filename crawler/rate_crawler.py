@@ -15,35 +15,37 @@ sys.setdefaultencoding('utf8')
 
 class RateCrawler:
     def __init__(self):
-        self.session = init_session()
-        self.items = self.session.query(Item).filter(Item.is_crawled == False).all()
+        self.client = init_client()
+        self.db = self.client[config['db_name']]
+        self.collection = self.db.rates
+        self.items = self.db.items.find({'is_crawled': False})
 
     def run(self):
         for item in self.items:
             base_url = "https://rate.tmall.com/list_detail_rate.htm?itemId=%s&sellerId=%s&currentPage=%d&pageSize=1000000"
-            url = base_url % (item.item_id, item.seller_id, 1)
+            url = base_url % (item['item_id'], item['seller_id'], 1)
             try:
                 body = "{" + get_body(url).decode("gbk") + "}"
                 if len(body) == 2:
-                    add_failed_url(self.session, url)
+                    add_failed_url(self.db, url)
                     continue
             except:
-                add_failed_url(self.session, url)
+                add_failed_url(self.db, url)
                 continue
 
             page_num = self.__parse_page_num(body)
-            print item.title, ' ', item.item_id, '--------->' , page_num, time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
+            print item['title'], ' ', item['item_id'], '--------->' , page_num, time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
             tasks = []
             q = gevent.queue.Queue()
             for i in range(1, page_num+1):
-                url = base_url % (item.item_id, item.seller_id, i)
+                url = base_url % (item['item_id'], item['seller_id'], i)
                 tasks.append(gevent.spawn(self.__async_get_rates, url, q))
             gevent.joinall(tasks)
-            print "adding data of item:%s" % item.item_id,  time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
+            print "adding data of item:%s" % item['item_id'],  time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
             while not q.empty():
                 body = q.get()
                 if len(body) == 2:
-                    add_failed_url(self.session, url)
+                    add_failed_url(self.db, url)
                     continue
                 rates = self.__parse_rates(body)
                 self.__add_rates(rates)
@@ -55,7 +57,7 @@ class RateCrawler:
             body = "{" + get_body(url).decode("gbk") + "}"
             q.put(body)
         except:
-            add_failed_url(self.session, url)
+            add_failed_url(self.db, url)
         print url
 
 
@@ -84,18 +86,16 @@ class RateCrawler:
 
     def __add_rates(self, rates):
         for rate in rates:
-            if self.session.query(Rate).filter(Rate.rate_id == rate.rate_id).count() == 0:
-                self.session.add(rate)
-        self.session.commit()
+            if self.collection.find({'rate_id': rate.rate_id}).count() == 0:
+                self.collection.insert(rate.dict())
 
     def __update_item(self, item):
-        self.session.query(Item).filter(Item.id == item.id).update({
-            'is_crawled': True
+        self.db.items.update({'item_id': item['item_id']}, {
+            '$set': {'is_crawled': True},
         })
-        self.session.commit()
 
     def __close(self):
-        self.session.close()
+        self.client.close()
 
 crawler = RateCrawler()
 crawler.run()

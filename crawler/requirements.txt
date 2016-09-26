@@ -1,5 +1,4 @@
-sqlalchemy
+pymongo
 requests
 requesocks
 gevent
-mysql-connector
