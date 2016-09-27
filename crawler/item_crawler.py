@@ -27,7 +27,6 @@ class ItemCrawler:
             print url
             body = get_body(url)
             if len(body) == 0:
-                add_failed_url(self.db, url)
                 continue
             items = self.__parse(body)
             self.__add_items(items)
