@@ -7,7 +7,11 @@ from config import *
 
 def init_client():
     client = pymongo.MongoClient(config['db_host'], config['db_port'])
+    if len(config['db_user']) != 0:
+        admin = client['admin']
+        admin.authenticate(config['db_user'], config['db_pass'])
     return client
+
 
 def get_http_client():
     if config['use_tor_proxy']:
