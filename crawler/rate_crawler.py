@@ -21,9 +21,19 @@ class RateCrawler:
         self.items = self.db.items.find({'is_crawled': False})
 
     def run(self):
+        items = []
         for item in self.items:
+            items.append(Item(
+                item['item_id'],
+                item['seller_id'],
+                item['title'],
+                False
+            ))
+            pass
+
+        for item in items:
             base_url = "https://rate.tmall.com/list_detail_rate.htm?itemId=%s&sellerId=%s&currentPage=%d&pageSize=1000000"
-            url = base_url % (item['item_id'], item['seller_id'], 1)
+            url = base_url % (item.item_id, item.seller_id, 1)
             try:
                 body = "{" + get_body(url).decode("gbk") + "}"
                 if len(body) == 2:
@@ -34,14 +44,14 @@ class RateCrawler:
                 continue
 
             page_num = self.__parse_page_num(body)
-            print item['title'], ' ', item['item_id'], '--------->' , page_num, time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
+            print item.title, ' ', item.item_id, '--------->' , page_num, time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
             tasks = []
             q = gevent.queue.Queue()
             for i in range(1, page_num+1):
-                url = base_url % (item['item_id'], item['seller_id'], i)
+                url = base_url % (item.item_id, item.seller_id, i)
                 tasks.append(gevent.spawn(self.__async_get_rates, url, q))
             gevent.joinall(tasks)
-            print "adding data of item:%s" % item['item_id'],  time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
+            print "adding data of item:%s" % item.item_id,  time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
             while not q.empty():
                 body = q.get()
                 if len(body) == 2:
@@ -90,7 +100,7 @@ class RateCrawler:
                 self.collection.insert(rate.dict())
 
     def __update_item(self, item):
-        self.db.items.update({'item_id': item['item_id']}, {
+        self.db.items.update({'item_id': item.item_id}, {
             '$set': {'is_crawled': True},
         })
 
