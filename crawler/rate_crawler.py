@@ -18,6 +18,7 @@ class RateCrawler:
         self.client = init_client()
         self.db = self.client[config['db_name']]
         self.collection = self.db.rates
+        self.collection.ensure_index('rate_id', unique=True)
         self.items = self.db.items.find({'is_crawled': False})
 
     def run(self):
@@ -96,8 +97,10 @@ class RateCrawler:
 
     def __add_rates(self, rates):
         for rate in rates:
-            if self.collection.find({'rate_id': rate.rate_id}).count() == 0:
+            # if self.collection.find({'rate_id': rate.rate_id}).count() == 0:
+            try:
                 self.collection.insert(rate.dict())
+            except:pass
 
     def __update_item(self, item):
         self.db.items.update({'item_id': item.item_id}, {

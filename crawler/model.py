@@ -1,6 +1,5 @@
 # -*- coding:utf-8 -*-
 
-
 class Item:
 
     def __init__(self, item_id, seller_id, title, is_crawled):
