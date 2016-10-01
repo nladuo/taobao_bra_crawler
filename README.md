@@ -34,7 +34,7 @@ python crawler/simple_analyzer.py   #统计数据
 ```
 ### 运行网页显示
 ``` shell
-cd web_display
+cd data_visualization
 npm install
 npm run dev
 ```
