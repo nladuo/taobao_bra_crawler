@@ -4,13 +4,14 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
   <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css"  />
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
 
-  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
   <title>淘宝文胸销量分析</title>
   <script type="text/javascript" src="js/jquery-1.12.3.min.js"></script>
-  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
   <script src="js/echarts.min.js"></script>
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -42,6 +43,28 @@
     </ul>
   </nav>
   <script type="text/javascript">
+
+      /*分页按钮颜色控制*/
+$('.pager li>a').mousedown(function () {
+    $(this).css("color","#ffffff");
+    $(this).css("background-color","#4dabff");
+});
+
+$('.pager li>a').on("touchstart",function () {
+  $(this).css("color","#ffffff");
+  $(this).css("background-color","#4dabff");
+});
+
+$('.pager li>a').mouseup(function () {
+  $('.pager li>a').css("background-color","#ffffff");
+  $('.pager li>a').css("color","#56caff");
+});
+
+$('.pager li>a').on("touchend",function () {
+  $('.pager li>a').css("background-color","#ffffff");
+  $('.pager li>a').css("color","#56caff");
+});
+
  //加载饼状图和柱状图
  var bra_data="bra.json"; 
  var data_basic=[],type_basic=[],data_color=[],type_color=[],data_size=[],type_size=[];

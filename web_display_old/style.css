@@ -22,11 +22,24 @@ body {
 }
 .linear{
     width:100%;
-    background: -ms-linear-gradient(top,#FFFFFF,  #C1FFC1);        /* IE 10 */
+    background: -ms-linear-gradient(top,#FFFFFF, #8ef5ff);        /* IE 10 */
     background:-moz-linear-gradient(top,#FFFFFF,#C1FFC1);/*火狐*/
-    background:-webkit-gradient(linear, 0% 0%, 0% 100%,from(#FFFFFF), to(#C1FFC1));/*谷歌*/
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFFFFF), to(#C1FFC1));      /* Safari 4-5, Chrome 1-9*/
-    background: -webkit-linear-gradient(top, #FFFFFF, #C1FFC1);   /*Safari5.1 Chrome 10+*/
+    background:-webkit-gradient(linear, 0% 0%, 0% 100%,from(#FFFFFF), to(#8ef5ff));/*谷歌*/
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFFFFF), to(#8ef5ff));      /* Safari 4-5, Chrome 1-9*/
+    background: -webkit-linear-gradient(top, #FFFFFF, #befcff);   /*Safari5.1 Chrome 10+*/
     background: -o-linear-gradient(top, #FFFFFF, #C1FFC1);  /*Opera 11.10+*/
 
+}
+.pager li>a, .pager li>span{
+    background: #ffffff;
+}
+a{
+    color:#56caff;
+
+}
+a:focus, a:hover{
+    color:#ffffff;
+}
+.pager li>a:focus, .pager li>a:hover{
+    background-color: #4dabff;
 }
