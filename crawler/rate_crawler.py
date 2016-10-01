@@ -61,6 +61,7 @@ class RateCrawler:
                 rates = self.__parse_rates(body)
                 self.__add_rates(rates)
             self.__update_item(item) # 把item的is_crawled设为1
+            time.sleep(30) # 睡眠30秒
         self.__close()
 
     def __async_get_rates(self, url, q):
