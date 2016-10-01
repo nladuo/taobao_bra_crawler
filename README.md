@@ -37,4 +37,5 @@ python crawler/simple_analyzer.py   #统计数据
 cd data_visualization
 npm install
 npm run dev
+node build/build.js # 生成dist
 ```

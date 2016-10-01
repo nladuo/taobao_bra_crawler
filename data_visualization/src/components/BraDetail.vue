@@ -16,7 +16,7 @@
         events: {
             'reload-detail-chart' () {
                 $("#detail").width(document.body.clientWidth*0.7);
-                console.log('reload-detail-chart');
+//                console.log('reload-detail-chart');
                 var chart = echarts.init(this.$el);
                 var option_detail = {
                     title: {

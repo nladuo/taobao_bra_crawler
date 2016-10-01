@@ -17,7 +17,7 @@
         events: {
             'reload-color-chart' () {
                 $("#color").width(document.body.clientWidth*0.7);
-                console.log('reload-color-chart');
+//                console.log('reload-color-chart');
                 var chart = echarts.init(document.getElementById('color'));
                 var option_color = {
                     title : {

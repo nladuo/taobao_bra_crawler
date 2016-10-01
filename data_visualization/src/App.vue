@@ -58,19 +58,17 @@
             },
             next: function () {
                 this.now_page = (this.now_page + 1) % 3;
-                console.log(this.now_page);
                 this.reload_chart();
             },
             previous: function () {
                 this.now_page = (this.now_page + 2) % 3;
-                console.log(this.now_page);
                 this.reload_chart();
             }
         },
         ready(){
             var that = this;
-            $.getJSON('/static/bra.json', function(data) {
-                console.log(data);
+            $.getJSON('static/bra.json', function(data) {
+//                console.log(data);
                 var bra = that.bra;
                 //按罩杯分类
                 $.each(data.basic, function (key, word) {

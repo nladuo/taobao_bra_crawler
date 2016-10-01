@@ -16,7 +16,7 @@
         events: {
             'reload-basic-chart' () {
                 $("#basic").width(document.body.clientWidth*0.7);
-                console.log('reload-basic-chart');
+//                console.log('reload-basic-chart');
                 var chart = echarts.init(document.getElementById('basic'));
                 var option_basic = {
                     title : {
