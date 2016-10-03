@@ -30,8 +30,9 @@ class SimpleAnalyzer:
         # 只统计以下几种颜色
         color_keys = [u"红色", u"橙色", u"黄色", u"绿色", u"蓝色", u"紫色", u"黑色", u"白色", u"粉色"]
 
+        print "正在统计中， 请耐心等待......"
         for rate in self.rates:
-            print rate['size_info']
+            # print rate['size_info']
 
             # 统计罩杯尺寸
             sizes = re.findall(size_pattern, rate['size_info'])
@@ -56,7 +57,6 @@ class SimpleAnalyzer:
                         self.colors[color_key] += 1
                     else:
                         self.colors[color_key] = 1
-        
         self.__close()
 
     def __close(self):
@@ -68,6 +68,7 @@ class SimpleAnalyzer:
 if __name__ == '__main__':
     analyzer = SimpleAnalyzer()
     analyzer.run()
+
     bra_data = {
         'basic': analyzer.sizes,
         'color': analyzer.colors,

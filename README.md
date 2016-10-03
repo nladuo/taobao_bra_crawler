@@ -2,16 +2,22 @@
 a taobao web crawler just for fun.
 
 ## 说明
-淘宝文胸商品评论内容爬取与简单分析。<br>
-测试环境：腾讯云主机一台，系统是ubuntu-14.04<br>
+淘宝文胸商品评论内容爬取与简单分析。
+
+## 部署环境
+测试环境：腾讯云主机一台
+操作系统：ubuntu-14.04
 数据库： mongodb
 效果展示：[http://nladuo.github.io/bra](http://nladuo.github.io/bra)
 
-## 数据下载
+## 商品评论数据
+### 下载地址
 
 
-## 项目状态
-正在使用python重写中。。。
+### 导入数据
+``` shell
+mongoimport -d taobao -c rates  --file ./rates.dat
+```
 
 ## 爬虫部署
 ### 修改配置文件
