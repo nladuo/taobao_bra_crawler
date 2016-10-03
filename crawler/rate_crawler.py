@@ -13,6 +13,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
+
 class RateCrawler:
     def __init__(self):
         self.client = init_client()
@@ -23,6 +24,7 @@ class RateCrawler:
 
     def run(self):
         items = []
+        # 先把数据读到内存
         for item in self.items:
             items.append(Item(
                 item['item_id'],
@@ -65,6 +67,7 @@ class RateCrawler:
         self.__close()
 
     def __async_get_rates(self, url, q):
+        """ 异步发送get请求 """
         try:
             body = "{" + get_body(url).decode("gbk") + "}"
             q.put(body)
@@ -74,6 +77,7 @@ class RateCrawler:
 
 
     def __parse_page_num(self, body):
+        """ 解析商品的评论页数 """
         try:
             data = json.loads(body)
             page_num = data['rateDetail']['paginator']['lastPage']
@@ -83,6 +87,7 @@ class RateCrawler:
 
 
     def __parse_rates(self, body):
+        """ 解析商品的评论 """
         rates = []
         try:
             data = json.loads(body)
@@ -97,19 +102,25 @@ class RateCrawler:
         return rates
 
     def __add_rates(self, rates):
+        """ 添加商品评论 """
         for rate in rates:
             try:
                 self.collection.insert(rate.dict())
-            except:pass
+            except:
+                pass
 
     def __update_item(self, item):
+        """ 把当前商品设置为：已经爬取过 """
         self.db.items.update({'item_id': item.item_id}, {
             '$set': {'is_crawled': True},
         })
 
     def __close(self):
+        """ 关闭数据库 """
         self.client.close()
 
-crawler = RateCrawler()
-crawler.run()
+
+if __name__ == '__main__':
+    crawler = RateCrawler()
+    crawler.run()
 

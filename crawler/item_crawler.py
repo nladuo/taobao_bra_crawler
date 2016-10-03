@@ -10,7 +10,9 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
+
 class ItemCrawler:
+    """ 爬取淘宝文胸商品记录 """
 
     def __init__(self):
         self.client = init_client()
@@ -36,6 +38,7 @@ class ItemCrawler:
 
 
     def __parse(self, body):
+        """ 解析商品记录 """
         items = []
         try:
             data = json.loads(body)
@@ -52,16 +55,18 @@ class ItemCrawler:
 
 
     def __add_items(self, items):
+        """ 添加商品记录到数据库 """
         for item in items:
             if self.collection.find({'item_id': item.item_id}).count() == 0:
                 self.collection.insert(item.dict())
 
     def __close(self):
+        """ 关闭数据库 """
         self.client.close()
 
 
-
-crawler = ItemCrawler()
-crawler.run()
+if __name__ == '__main__':
+    crawler = ItemCrawler()
+    crawler.run()
 
 

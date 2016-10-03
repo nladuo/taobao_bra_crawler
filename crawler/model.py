@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 
 class Item:
+    """ 商品 """
 
     def __init__(self, item_id, seller_id, title, is_crawled):
         self.item_id = item_id
@@ -18,6 +19,7 @@ class Item:
 
 
 class Rate:
+    """ 商品的评论 """
 
     def __init__(self, rate_id, size_info, rate_content):
         self.rate_id = rate_id
@@ -32,6 +34,7 @@ class Rate:
         }
 
 class FailedUrl:
+    """ 用来记录失败的网址 """
 
     def __init__(self, url):
         self.url = url

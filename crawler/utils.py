@@ -5,6 +5,8 @@ import requesocks
 from model import FailedUrl
 from config import *
 
+
+# 初始化mongodb客户端
 def init_client():
     client = pymongo.MongoClient(config['db_host'], config['db_port'])
     if len(config['db_user']) != 0:
@@ -13,6 +15,7 @@ def init_client():
     return client
 
 
+# 根据是否使用tor代理，来获取http客户端
 def get_http_client():
     if config['use_tor_proxy']:
         session = requesocks.session()
@@ -22,6 +25,8 @@ def get_http_client():
     else:
         return requests.session()
 
+
+# 发送get请求
 def get_body(url):
     retry_times = 0
     client = get_http_client()
@@ -34,6 +39,7 @@ def get_body(url):
     return ''
 
 
+# 把失败的url添加到数据库
 def add_failed_url(db, url):
     collection = db.failed_urls
     if collection.find({'url': url}).count() == 0:

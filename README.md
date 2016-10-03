@@ -3,7 +3,7 @@ a taobao web crawler just for fun.
 
 ## 说明
 淘宝文胸商品评论内容爬取与简单分析。<br>
-测试环境：国外vps一台，系统是ubuntu-14.04<br>
+测试环境：腾讯云主机一台，系统是ubuntu-14.04<br>
 数据库： mongodb
 效果展示：[http://nladuo.github.io/bra](http://nladuo.github.io/bra)
 

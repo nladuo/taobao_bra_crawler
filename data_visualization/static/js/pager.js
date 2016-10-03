@@ -1,7 +1,3 @@
-/**
- * Created by kalen on 10/1/16.
- */
-
 $(document).ready(function(){
     $('.pager li>a').mousedown(function () {
         $(this).css("color","#337ab7");
