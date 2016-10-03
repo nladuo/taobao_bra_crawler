@@ -6,7 +6,7 @@ a taobao web crawler just for fun.
 
 ## 部署环境
 测试环境：腾讯云主机一台
-操作系统：ubuntu-14.04
+操作系统：ubuntu-14.04  
 数据库： mongodb
 效果展示：[http://nladuo.github.io/bra](http://nladuo.github.io/bra)
 
