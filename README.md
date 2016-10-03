@@ -7,6 +7,9 @@ a taobao web crawler just for fun.
 数据库： mongodb
 效果展示：[http://nladuo.github.io/bra](http://nladuo.github.io/bra)
 
+## 数据下载
+
+
 ## 项目状态
 正在使用python重写中。。。
 

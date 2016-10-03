@@ -22,6 +22,7 @@ class ItemCrawler:
         for i in range(1, 100 + 1):
             urls.append("http://s.m.taobao.com/search?q=文胸&m=api4h5&page=" + str(i))
             urls.append("http://s.m.taobao.com/search?q=胸罩&m=api4h5&page=" + str(i))
+            urls.append("http://s.m.taobao.com/search?q=bra&m=api4h5&page=" + str(i))
 
         for url in urls:
             print url
