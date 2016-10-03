@@ -21,7 +21,6 @@
                 var option_detail = {
                     title: {
                         text: '各胸围尺寸所占人数柱状图',
-                        /*subtext: '仅具参考意义',*/
                         x:'center'
                     },
                     tooltip: {

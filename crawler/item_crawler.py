@@ -36,7 +36,6 @@ class ItemCrawler:
 
         self.__close()
 
-
     def __parse(self, body):
         """ 解析商品记录 """
         items = []
@@ -52,8 +51,6 @@ class ItemCrawler:
             items.append(item)
         return items
 
-
-
     def __add_items(self, items):
         """ 添加商品记录到数据库 """
         for item in items:
@@ -68,5 +65,4 @@ class ItemCrawler:
 if __name__ == '__main__':
     crawler = ItemCrawler()
     crawler.run()
-
 

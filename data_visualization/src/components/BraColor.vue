@@ -3,7 +3,6 @@
         width: 70%;
         height:530px;
         margin: 0 auto;
-        /*display: none;*/
     }
 </style>
 <template>

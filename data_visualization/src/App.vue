@@ -25,7 +25,6 @@
     #app, #main{
         height: 100%;
     }
-
 </style>
 <script type="text/ecmascript-6">
     $(".linear").height(($(window).height()));
