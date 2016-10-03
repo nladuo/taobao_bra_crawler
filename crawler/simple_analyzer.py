@@ -5,6 +5,7 @@ import re
 from utils import *
 import json
 import sys
+from datetime import datetime
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -31,6 +32,7 @@ class SimpleAnalyzer:
         color_keys = [u"红色", u"橙色", u"黄色", u"绿色", u"蓝色", u"紫色", u"黑色", u"白色", u"粉色"]
 
         print "正在统计中， 请耐心等待......"
+        before_exec_time = datetime.now()
         for rate in self.rates:
             # print rate['size_info']
 
@@ -57,6 +59,8 @@ class SimpleAnalyzer:
                         self.colors[color_key] += 1
                     else:
                         self.colors[color_key] = 1
+        after_exec_time = datetime.now()
+        print "共耗时", (after_exec_time - before_exec_time).seconds, "秒"
         self.__close()
 
     def __close(self):
