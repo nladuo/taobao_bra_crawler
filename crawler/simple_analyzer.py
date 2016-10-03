@@ -17,11 +17,10 @@ class SimpleAnalyzer:
         self.client = init_client()
         self.db = self.client[config['db_name']]
         self.rates = self.db.rates.find({})
+        # 初始化数据
         self.sizes = {}
         self.colors = {}
         self.size_details = {}
-
-
 
     def run(self):
         # 使用正则表达式匹配A、B、C、D杯....
@@ -57,6 +56,12 @@ class SimpleAnalyzer:
                         self.colors[color_key] += 1
                     else:
                         self.colors[color_key] = 1
+        
+        self.__close()
+
+    def __close(self):
+        """ 关闭数据库 """
+        self.client.close()
 
 
 

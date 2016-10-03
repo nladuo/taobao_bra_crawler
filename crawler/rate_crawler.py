@@ -38,6 +38,7 @@ class RateCrawler:
             base_url = "https://rate.tmall.com/list_detail_rate.htm?itemId=%s&sellerId=%s&currentPage=%d&pageSize=1000000"
             url = base_url % (item.item_id, item.seller_id, 1)
             try:
+                # 这里返回的数据不是纯json，需要在两边加上{}
                 body = "{" + get_body(url).decode("gbk") + "}"
                 if len(body) == 2:
                     add_failed_url(self.db, url)
@@ -46,15 +47,21 @@ class RateCrawler:
                 add_failed_url(self.db, url)
                 continue
 
+            # 获取评论页数
             page_num = self.__parse_page_num(body)
-            print item.title, ' ', item.item_id, '--------->' , page_num, time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
+            print item.title, ' ', item.item_id, '--------->' , page_num, \
+                time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
+
+            # 使用gevent并发爬取，把数据存在queue里
             tasks = []
             q = gevent.queue.Queue()
             for i in range(1, page_num+1):
                 url = base_url % (item.item_id, item.seller_id, i)
                 tasks.append(gevent.spawn(self.__async_get_rates, url, q))
             gevent.joinall(tasks)
-            print "adding data of item:%s" % item.item_id,  time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
+            print "adding data of item:%s" % item.item_id,  time.strftime("%Y-%m-%d %H:%M:%S",
+                                                                          time.localtime(time.time()))
+            # 逐个添加到数据库
             while not q.empty():
                 body = q.get()
                 if len(body) == 2:
@@ -62,7 +69,8 @@ class RateCrawler:
                     continue
                 rates = self.__parse_rates(body)
                 self.__add_rates(rates)
-            self.__update_item(item) # 把item的is_crawled设为1
+            # 把item的is_crawled设为1
+            self.__update_item(item)
             # time.sleep(30) # 睡眠30秒
         self.__close()
 
@@ -75,7 +83,6 @@ class RateCrawler:
             add_failed_url(self.db, url)
         print url
 
-
     def __parse_page_num(self, body):
         """ 解析商品的评论页数 """
         try:
@@ -84,7 +91,6 @@ class RateCrawler:
             return page_num
         except:
             return 0
-
 
     def __parse_rates(self, body):
         """ 解析商品的评论 """

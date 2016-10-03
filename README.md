@@ -23,7 +23,7 @@ config = {
     'db_pass': '',
     'db_host': 'localhost',
     'db_port': 27017,
-    'db_name': 'taobao', #需创建taobao数据库
+    'db_name': 'taobao',
     'use_tor_proxy': False,
     'tor_proxy_port': 9050
 }

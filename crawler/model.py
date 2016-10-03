@@ -10,6 +10,7 @@ class Item:
         self.is_crawled = is_crawled
 
     def dict(self):
+        """ 将数据转化为字典 """
         return {
             'item_id': self.item_id,
             'seller_id': self.seller_id,
@@ -27,6 +28,7 @@ class Rate:
         self.rate_content = rate_content
 
     def dict(self):
+        """ 将数据转化为字典 """
         return {
             'rate_id': self.rate_id,
             'size_info': self.size_info,
@@ -40,5 +42,6 @@ class FailedUrl:
         self.url = url
 
     def dict(self):
+        """ 将数据转化为字典 """
         return {'url': self.url}
 
