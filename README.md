@@ -12,7 +12,7 @@ a taobao web crawler just for fun.
 
 ## 商品评论数据
 ### 下载地址
-
+链接: [https://pan.baidu.com/s/1bpbuZLX](https://pan.baidu.com/s/1bpbuZLX) 密码: kvyp
 
 ### 导入数据
 ``` shell
