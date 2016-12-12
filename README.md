@@ -15,11 +15,15 @@ a taobao web crawler just for fun.
 链接: [https://pan.baidu.com/s/1bpbuZLX](https://pan.baidu.com/s/1bpbuZLX) 密码: kvyp
 
 ### 导入数据
-``` shell
+``` bash
 mongoimport -d taobao -c rates  --file ./rates.dat
 ```
 
 ## 爬虫部署
+### 安装依赖
+``` bash
+pip install -r crawler/requirements.txt
+```
 ### 修改配置文件
 ``` python
 # -*- coding:utf-8 -*-
@@ -36,13 +40,13 @@ config = {
 ```
 如果有被禁IP的情况可以使用tor代理，将config['use_tor_proxy']设置为True，具体方法见[python中使用tor代理](http://nladuo.github.io/2016/07/17/python%E4%B8%AD%E4%BD%BF%E7%94%A8tor%E4%BB%A3%E7%90%86/)
 ### 运行爬虫
-``` shell
+``` bash
 python crawler/item_crawler.py      #爬文胸的商品信息
 python crawler/rate_crawler.py      #爬文胸的评论信息
 python crawler/simple_analyzer.py   #统计数据
 ```
 ### 运行网页显示
-``` shell
+``` bash
 cd data_visualization
 npm install     # 安装依赖
 npm run dev		# 进行调试
