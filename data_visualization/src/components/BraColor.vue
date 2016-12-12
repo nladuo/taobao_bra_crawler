@@ -1,10 +1,3 @@
-<style>
-  #color {
-    width: 70%;
-    height:530px;
-    margin: 0 auto;
-  }
-</style>
 <template>
   <div id="color"></div>
 </template>
@@ -16,8 +9,8 @@
     events: {
       'reload-color-chart' () {
         $("#color").width(document.body.clientWidth*0.7);
-        var chart = echarts.init(document.getElementById('color'));
-        var option_color = {
+        let chart = echarts.init(document.getElementById('color'));
+        let option_color = {
           title : {
             text: '淘宝网用户购买文胸颜色饼状图',
             subtext: '仅具参考意义',
@@ -56,3 +49,10 @@
     }
   }
 </script>
+<style scoped>
+  #color {
+    width: 70%;
+    height:530px;
+    margin: 0 auto;
+  }
+</style>

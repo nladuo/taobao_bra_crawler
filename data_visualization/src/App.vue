@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <div id="main">
-      <basic :bra.sync="bra" v-bind:style="{ display: now_page == 0 ? 'block' : 'none'}"></basic>
-      <color :bra.sync="bra" v-bind:style="{ display: now_page == 1 ? 'block' : 'none'}"></color>
-      <detail :bra.sync="bra" v-bind:style="{ display: now_page == 2 ? 'block' : 'none'}"></detail>
+      <bra-basic :bra.sync="bra" v-bind:style="{ display: now_page == 0 ? 'block' : 'none'}"></bra-basic>
+      <bra-color :bra.sync="bra" v-bind:style="{ display: now_page == 1 ? 'block' : 'none'}"></bra-color>
+      <bra-detail :bra.sync="bra" v-bind:style="{ display: now_page == 2 ? 'block' : 'none'}"></bra-detail>
     </div>
     <nav>
       <ul class="pager">
@@ -21,18 +21,14 @@
     </nav>
   </div>
 </template>
-<style>
-  #app, #main{
-    height: 100%;
-  }
-</style>
 <script type="text/ecmascript-6">
-  $(".linear").height(($(window).height()));
-
-  import Basic from './components/BraBasic.vue'
-  import Detail from './components/BraDetail.vue'
-  import Color from './components/BraColor.vue'
+  import BraBasic from './components/BraBasic.vue'
+  import BraDetail from './components/BraDetail.vue'
+  import BraColor from './components/BraColor.vue'
   export default {
+    components:{
+      BraBasic, BraDetail, BraColor
+    },
     data(){
       return{
         now_page: 0,
@@ -47,24 +43,25 @@
       }
     },
     methods:{
-      reload_chart: function () {
+      reload_chart() {
         switch (this.now_page){
           case 0: this.$broadcast('reload-basic-chart');break;
           case 1: this.$broadcast('reload-color-chart');break;
           case 2: this.$broadcast('reload-detail-chart');break;
         }
       },
-      next: function () {
+      next() {
         this.now_page = (this.now_page + 1) % 3;
         this.reload_chart();
       },
-      previous: function () {
+      previous() {
         this.now_page = (this.now_page + 2) % 3;
         this.reload_chart();
       }
     },
     ready(){
-      var that = this;
+      $(".linear").height(($(window).height()));
+      let that = this;
       $.getJSON('static/bra.json', function(data) {
         var bra = that.bra;
         //按罩杯分类
@@ -83,7 +80,7 @@
         });
         //按具体的罩杯分类
         $.each(data.detail, function (key, word) {
-          var whole = data.detail.whole;
+          let whole = data.detail.whole;
           if (key != "whole" && word >= 1000) {
             bra.detail.push((100 * word / whole).toFixed(3));
             bra.type_detail.push(key);
@@ -92,11 +89,12 @@
         that.bra = bra;
         that.reload_chart();
       });
-    },
-    components:{
-      basic: Basic,
-      color: Color,
-      detail: Detail
     }
   }
 </script>
+<style scoped>
+  @import './assets/style.css';
+  #app, #main{
+    height: 100%;
+  }
+</style>

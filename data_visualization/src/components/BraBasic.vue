@@ -1,10 +1,3 @@
-<style>
-  #basic {
-    width: 70%;
-    height: 530px;
-    margin: 0 auto;
-  }
-</style>
 <template>
   <div id="basic"></div>
 </template>
@@ -16,8 +9,8 @@
     events: {
       'reload-basic-chart' () {
         $("#basic").width(document.body.clientWidth*0.7);
-        var chart = echarts.init(document.getElementById('basic'));
-        var option_basic = {
+        let chart = echarts.init(document.getElementById('basic'));
+        let option_basic = {
           title : {
             text: '淘宝网用户购买文胸尺寸饼状图',
             subtext: '仅具参考意义',
@@ -56,3 +49,10 @@
     }
   }
 </script>
+<style scoped>
+  #basic {
+    width: 70%;
+    height: 530px;
+    margin: 0 auto;
+  }
+</style>

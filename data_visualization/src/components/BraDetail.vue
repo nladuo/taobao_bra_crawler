@@ -1,10 +1,3 @@
-<style>
-  #detail {
-    width: 70%;
-    height: 530px;
-    margin: 0 auto;
-  }
-</style>
 <template>
   <div id="detail"></div>
 </template>
@@ -16,8 +9,8 @@
     events: {
       'reload-detail-chart' () {
         $("#detail").width(document.body.clientWidth*0.7);
-        var chart = echarts.init(this.$el);
-        var option_detail = {
+        let chart = echarts.init(this.$el);
+        let option_detail = {
           title: {
             text: '各胸围尺寸所占人数柱状图',
             x:'center'
@@ -74,3 +67,10 @@
     }
   }
 </script>
+<style scoped>
+  #detail {
+    width: 70%;
+    height: 530px;
+    margin: 0 auto;
+  }
+</style>
