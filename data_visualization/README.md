@@ -1,6 +1,6 @@
 # data_visualization
 
-> taobao bra data visualization
+> taobao bra data visualization.
 
 ## Build Setup
 
