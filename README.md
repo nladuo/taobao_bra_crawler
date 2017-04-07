@@ -36,7 +36,7 @@ config = {
     'tor_proxy_port': 9050
 }
 ```
-一般爬取速度不快不会有禁IP的情况。如果有被禁IP的情况可以使用tor代理，将config['use_tor_proxy']设置为True，具体方法见[python中使用tor代理](http://nladuo.github.io/2016/07/17/python%E4%B8%AD%E4%BD%BF%E7%94%A8tor%E4%BB%A3%E7%90%86/)
+一般的爬取速度不会有禁IP的情况。如果有被禁IP的情况可以使用tor代理，将config['use_tor_proxy']设置为True，具体方法见[python中使用tor代理](http://nladuo.github.io/2016/07/17/python%E4%B8%AD%E4%BD%BF%E7%94%A8tor%E4%BB%A3%E7%90%86/)
 ### 运行爬虫
 ``` bash
 python crawler/item_crawler.py      # 爬文胸的商品信息
@@ -60,13 +60,13 @@ npm run build   # 生成dist
 ```
 #### 效果展示
 见: [http://nladuo.github.io/bra](http://nladuo.github.io/bra)
+
 ### 关键词分析
-编写中...
 #### 运行脚本
 ```
 cd keyword_analyzer
 python create_corpus.py     # 1.加载评论信息
-python extract_tags.py      # 2.提取关键词
+python extract_tags.py      # 2.提取关键词(20分钟左右)
 python create_wordcloud.py  # 3.生成词云图片
 ```
 #### 效果
