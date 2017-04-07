@@ -21,7 +21,7 @@ mongoimport -d taobao -c rates  --file ./rates.dat
 
 ### 安装依赖
 ``` bash
-pip install -r crawler/requirements.txt
+pip install -r requirements.txt
 ```
 ### 修改配置文件
 ``` python
