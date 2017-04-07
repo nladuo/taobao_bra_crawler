@@ -63,7 +63,7 @@ npm run build   # 生成dist
 
 ### 关键词分析
 #### 运行脚本
-```
+``` sh
 cd keyword_analyzer
 python create_corpus.py     # 1.加载评论信息
 python extract_tags.py      # 2.提取关键词(20分钟左右, 可以直接用我的模型进行第三步)
