@@ -45,7 +45,7 @@ python crawler/rate_crawler.py      # 爬文胸的评论信息
 
 ## 数据分析
 ### 简单统计与可视化展示
-#### 1. 统计数据
+#### 1. 运行脚本
 ``` sh
 cd simple_analyzer
 python simple_analyzer.py               # 简单统计
@@ -62,3 +62,16 @@ npm run build   # 生成dist
 见: [http://nladuo.github.io/bra](http://nladuo.github.io/bra)
 ### 关键词分析
 编写中...
+#### 运行脚本
+```
+cd keyword_analyzer
+python create_corpus.py     # 1.加载评论信息
+python extract_tags.py      # 2.提取关键词
+python create_wordcloud.py  # 3.生成词云图片
+```
+#### 效果
+![word_cloud](./keyword_analyzer/assets/word_cloud.png)
+
+#### 参考
+- [Python pytagcloud 中文分词 生成标签云 系列（一）](http://www.cnblogs.com/Yiutto/p/5998262.html)
+- [利用pandas+python制作100G亚马逊用户评论数据词云](http://www.jianshu.com/p/c862130f322d)

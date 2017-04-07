@@ -2,6 +2,6 @@ pymongo
 requests
 requesocks
 gevent
-pygame
-simplejson
-pytagcloud
+jieba
+wordcloud
+Pillow
