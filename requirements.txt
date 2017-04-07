@@ -2,4 +2,6 @@ pymongo
 requests
 requesocks
 gevent
-gensim
+pygame
+simplejson
+pytagcloud
