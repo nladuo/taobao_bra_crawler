@@ -26,7 +26,6 @@ pip install -r crawler/requirements.txt
 ```
 ### 修改配置文件
 ``` python
-# -*- coding:utf-8 -*-
 config = {
     'timeout' : 3,
     'db_user': '',       # 无密码
@@ -38,12 +37,15 @@ config = {
     'tor_proxy_port': 9050
 }
 ```
-如果有被禁IP的情况可以使用tor代理，将config['use_tor_proxy']设置为True，具体方法见[python中使用tor代理](http://nladuo.github.io/2016/07/17/python%E4%B8%AD%E4%BD%BF%E7%94%A8tor%E4%BB%A3%E7%90%86/)
+一般爬取速度不快不会有禁IP的情况。如果有被禁IP的情况可以使用tor代理，将config['use_tor_proxy']设置为True，具体方法见[python中使用tor代理](http://nladuo.github.io/2016/07/17/python%E4%B8%AD%E4%BD%BF%E7%94%A8tor%E4%BB%A3%E7%90%86/)
 ### 运行爬虫
 ``` bash
 python crawler/item_crawler.py      #爬文胸的商品信息
 python crawler/rate_crawler.py      #爬文胸的评论信息
-python crawler/simple_analyzer.py   #统计数据
+```
+### 运行分析器
+``` sh
+python analyzer/simple_analyzer.py  #统计数据
 ```
 ### 运行网页显示
 ``` bash
