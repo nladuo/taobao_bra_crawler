@@ -75,3 +75,6 @@ python create_wordcloud.py  # 3.生成词云图片
 #### 参考
 - [Python pytagcloud 中文分词 生成标签云 系列（一）](http://www.cnblogs.com/Yiutto/p/5998262.html)
 - [利用pandas+python制作100G亚马逊用户评论数据词云](http://www.jianshu.com/p/c862130f322d)
+
+## LICENSE
+MIT
