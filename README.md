@@ -43,7 +43,7 @@ python crawler/item_crawler.py      # 爬文胸的商品信息
 python crawler/rate_crawler.py      # 爬文胸的评论信息
 ```
 
-## 数据分析
+## 数据处理
 ### 简单统计与可视化展示
 #### 1. 运行脚本
 ``` sh
