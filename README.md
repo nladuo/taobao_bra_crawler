@@ -28,7 +28,7 @@ pip install -r crawler/requirements.txt
 ``` python
 config = {
     'timeout' : 3,
-    'db_user': '',       # 无密码
+    'db_user': '',
     'db_pass': '',
     'db_host': 'localhost',
     'db_port': 27017,
@@ -40,22 +40,23 @@ config = {
 一般爬取速度不快不会有禁IP的情况。如果有被禁IP的情况可以使用tor代理，将config['use_tor_proxy']设置为True，具体方法见[python中使用tor代理](http://nladuo.github.io/2016/07/17/python%E4%B8%AD%E4%BD%BF%E7%94%A8tor%E4%BB%A3%E7%90%86/)
 ### 运行爬虫
 ``` bash
-python crawler/item_crawler.py      #爬文胸的商品信息
-python crawler/rate_crawler.py      #爬文胸的评论信息
+python crawler/item_crawler.py      # 爬文胸的商品信息
+python crawler/rate_crawler.py      # 爬文胸的评论信息
 ```
 ### 数据分析
 #### 简单统计与可视化展示
 1. 统计数据
 ``` sh
-python simple_analyzer/simple_analyzer.py 
-cp simple_analyzer/bra.json simple_analyzer/data_visualization/static/
+cd simple_analyzer
+python simple_analyzer.py               # 简单统计
+cp bra.json data_visualization/static/  # 拷贝统计结果
 ```
 2. 运行网页显示
 ``` sh
-cd simple_analyzer/data_visualization
+cd data_visualization
 npm install     # 安装依赖
-npm run dev		# 进行调试
-npm run build 	# 生成dist
+npm run dev     # 进行调试
+npm run build   # 生成dist
 ```
 #### 主题分析
-待编写
+编写中...
