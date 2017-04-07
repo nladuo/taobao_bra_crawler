@@ -70,7 +70,7 @@ python extract_tags.py      # 2.提取关键词(20分钟左右, 可以直接用�
 python create_wordcloud.py  # 3.生成词云图片
 ```
 #### 效果
-![word_cloud](./keyword_analyzer/assets/word_cloud.png)
+![word_cloud](./keyword_analyzer/assets/word_cloud1.png)
 
 #### 参考
 - [Python pytagcloud 中文分词 生成标签云 系列（一）](http://www.cnblogs.com/Yiutto/p/5998262.html)

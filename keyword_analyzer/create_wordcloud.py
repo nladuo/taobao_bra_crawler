@@ -29,5 +29,5 @@ if __name__ == "__main__":
     wc.recolor(color_func=image_colors)
 
     # 保存图片
-    wc.to_file("./assets/word_cloud.png")
-    print "saved at ./assets/word_cloud.png"
+    wc.to_file("./assets/word_cloud1.png")
+    print "saved at ./assets/word_cloud1.png"
