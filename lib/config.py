@@ -3,7 +3,7 @@
 
 """ 数据库配置文件 """
 config = {
-    'timeout' : 3,
+    'timeout': 3,
     'db_user': '',       # 无密码
     'db_pass': '',
     'db_host': 'localhost',

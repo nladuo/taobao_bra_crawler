@@ -43,14 +43,19 @@ config = {
 python crawler/item_crawler.py      #爬文胸的商品信息
 python crawler/rate_crawler.py      #爬文胸的评论信息
 ```
-### 运行分析器
+### 数据分析
+#### 简单统计与可视化展示
+1. 统计数据
 ``` sh
-python analyzer/simple_analyzer.py  #统计数据
+python simple_analyzer/simple_analyzer.py 
+cp simple_analyzer/bra.json simple_analyzer/data_visualization/static/
 ```
-### 运行网页显示
-``` bash
-cd data_visualization
+2. 运行网页显示
+``` sh
+cd simple_analyzer/data_visualization
 npm install     # 安装依赖
 npm run dev		# 进行调试
 npm run build 	# 生成dist
 ```
+#### 主题分析
+待编写

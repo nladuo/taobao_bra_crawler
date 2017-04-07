@@ -2,10 +2,13 @@
 # -*- coding:utf-8 -*-
 
 import re
-from utils import *
 import json
-import sys
 from datetime import datetime
+import sys
+sys.path.append("../")
+from lib.utils import *
+from lib.config import *
+
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -66,7 +69,6 @@ class SimpleAnalyzer:
     def __close(self):
         """ 关闭数据库 """
         self.client.close()
-
 
 
 if __name__ == '__main__':

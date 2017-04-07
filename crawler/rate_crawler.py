@@ -4,17 +4,20 @@
 from gevent import monkey; monkey.patch_all()
 import gevent
 from gevent import queue
-from model import *
-from utils import *
 import json
 import time
 import sys
+sys.path.append("../")
+from lib.model import *
+from lib.utils import *
 
 reload(sys)
 sys.setdefaultencoding('utf8')
 
 
 class RateCrawler:
+    """ 根据文胸商品, 爬取评论 """
+
     def __init__(self):
         self.client = init_client()
         self.db = self.client[config['db_name']]

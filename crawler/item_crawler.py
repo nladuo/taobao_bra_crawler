@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
-from model import *
-from utils import *
-from config import *
 import json
 import sys
+sys.path.append("../")
+from lib.model import *
+from lib.utils import *
+from lib.config import *
 
 reload(sys)
 sys.setdefaultencoding('utf8')
