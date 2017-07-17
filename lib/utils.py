@@ -10,7 +10,7 @@ from config import *
 def init_client():
     client = pymongo.MongoClient(config['db_host'], config['db_port'])
     if len(config['db_user']) != 0:
-        admin = client['admin']
+        admin = client[config['db_name']]
         admin.authenticate(config['db_user'], config['db_pass'])
     return client
 
