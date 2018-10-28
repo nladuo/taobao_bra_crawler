@@ -66,14 +66,14 @@
         var bra = that.bra;
         //按罩杯分类
         $.each(data.basic, function (key, word) {
-          if (key != "whole") {
+          if (key !== "whole") {
             bra.basic.push({"value": word, "name": key + "杯"});
             bra.type_basic.push(key + "杯");
           }
         });
         //按颜色分类
         $.each(data.color, function (key, word) {
-          if (key != "whole") {
+          if (key !== "whole") {
             bra.color.push({"value": word, "name": key});
             bra.type_color.push(key);
           }
@@ -81,7 +81,7 @@
         //按具体的罩杯分类
         $.each(data.detail, function (key, word) {
           let whole = data.detail.whole;
-          if (key != "whole" && word >= 1000) {
+          if (key !== "whole" && word >= 1000) {
             bra.detail.push((100 * word / whole).toFixed(3));
             bra.type_detail.push(key);
           }

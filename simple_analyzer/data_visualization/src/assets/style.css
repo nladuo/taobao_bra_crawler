@@ -11,9 +11,10 @@ body {
 
 .linear{
     width:100%;
-    background: -ms-linear-gradient(top,#FFFFFF,  #C1FFC1);        /* IE 10 */
-    background:-moz-linear-gradient(top,#FFFFFF,#C1FFC1);/*火狐*/
-    background:-webkit-gradient(linear, 0% 0%, 0% 100%,from(#FFFFFF), to(#C1FFC1));/*谷歌*/
+    background: linear-gradient(to bottom, #FFFFFF, #C1FFC1);;
+    background: -ms-linear-gradient(top, #FFFFFF, #C1FFC1);        /* IE 10 */
+    background: -moz-linear-gradient(top, #FFFFFF, #C1FFC1);/*火狐*/
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%,from(#FFFFFF), to(#C1FFC1));/*谷歌*/
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFFFFF), to(#C1FFC1));      /* Safari 4-5, Chrome 1-9*/
     background: -webkit-linear-gradient(top, #FFFFFF, #C1FFC1);   /*Safari5.1 Chrome 10+*/
     background: -o-linear-gradient(top, #FFFFFF, #C1FFC1);  /*Opera 11.10+*/
