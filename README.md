@@ -6,7 +6,9 @@ a taobao web crawler just for fun.
 
 ## 商品评论数据
 ### 下载地址
-链接: [https://pan.baidu.com/s/1bpbuZLX](https://pan.baidu.com/s/1bpbuZLX) 密码: kvyp
+百度云链接: [https://pan.baidu.com/s/19S5ziVX8kXhk7LtgKn94qw](https://pan.baidu.com/s/19S5ziVX8kXhk7LtgKn94qw) 密码: fmgy 
+<br>
+Google Drive链接：https://drive.google.com/file/d/1fJtXqDtuFVL7d61GkfL3pr2wDvMzKgJx/view?usp=sharing
 
 ### 导入数据
 ``` bash
